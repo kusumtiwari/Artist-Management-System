@@ -1,1 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
+
+
+@theme {
+  --font-family-sans: 'Inter', sans-serif;
+
+  /* colors */
+  --color-background: var(--bg-background);
+  --color-secondary: var(--bg-secondary);
+  --color-tertiary: var(--bg-teritary);
+  --color-overlay: var(--overlay-overlay);
+  --color-border: var(--border-border);
+
+  /* primary */
+  --color-primary: var(--bg-fill-primary);
+  --color-primary-hover: var(--bg-fill-primary-hover);
+  --color-primary-active: var(--bg-fill-primary-active);
+
+  /* fill */
+  --color-fill-primary: var(--bg-fill-primary);
+  --color-fill-primary-hover: var(--bg-fill-primary-hover);
+  --color-fill-primary-active: var(--bg-fill-primary-active);
+  --color-fill-secondary: var(--bg-fill-secondary);
+  --color-fill-secondary-hover: var(--bg-fill-secondary-hover);
+  --color-fill-secondary-active: var(--bg-fill-secondary-active);
+  --color-fill-error: var(--bg-fill-error);
+  --color-fill-error-hover: var(--bg-fill-error-hover);
+  --color-fill-error-active: var(--bg-fill-error-active);
+  --color-fill-success: var(--bg-fill-success);
+  --color-fill-success-hover: var(--bg-fill-success-hover);
+  --color-fill-success-active: var(--bg-fill-success-active);
+  --color-fill-warning: var(--bg-fill-warning);
+  --color-fill-warning-hover: var(--bg-fill-warning-hover);
+  --color-fill-warning-active: var(--bg-fill-warning-active);
+  --color-fill-info: var(--bg-fill-info);
+  --color-fill-info-hover: var(--bg-fill-info-hover);
+  --color-fill-info-active: var(--bg-fill-info-active);
+  --color-fill-inverse: var(--bg-fill-inverse);
+
+  /* text */
+  --color-text-default: var(--text-default);
+  --color-text-default-secondary: var(--text-default-secondary);
+  --color-text-default-tertiary: var(--text-default-tertiary);
+  --color-text-primary: var(--text-primary);
+  --color-text-primary-hover: var(--text-primary-hover);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-secondary-hover: var(--text-secondary-hover);
+  --color-text-error: var(--text-error);
+  --color-text-error-hover: var(--text-error-hover);
+  --color-text-success: var(--text-success);
+  --color-text-warning: var(--text-warning);
+  --color-text-info: var(--text-info);
+  --color-text-on-bg-fill: var(--text-primary-on-bg-fill);
+  --color-text-inverse: var(--text-inverse);
+  --color-text-disabled: var(--text-disabled);
+
+  /* border */
+  --color-border-default: var(--border-border);
+  --color-border-soft: var(--border-soft);
+  --color-border-hover: var(--border-hover);
+  --color-border-solid: var(--border-Solid);
+  --color-border-primary: var(--border-primary);
+  --color-border-primary-solid: var(--border-primary-solid);
+  --color-border-secondary: var(--border-secondary);
+  --color-border-secondary-solid: var(--border-secondary-solid);
+  --color-border-error: var(--border-error);
+  --color-border-error-solid: var(--border-error-solid);
+  --color-border-success: var(--border-success);
+  --color-border-warning: var(--border-warning);
+  --color-border-info: var(--border-info);
+  --color-border-disabled: var(--border-disabled);
+
+  /* icon */
+  --color-icon: var(--icon-icon);
+  --color-icon-hover: var(--icon-hover);
+  --color-icon-active: var(--icon-active);
+  --color-icon-primary: var(--icon-primary);
+  --color-icon-error: var(--icon-error);
+  --color-icon-success: var(--icon-success);
+  --color-icon-warning: var(--icon-warning);
+  --color-icon-info: var(--icon-info);
+  --color-icon-inverse: var(--icon-inverse);
+  --color-icon-on-bg-fill: var(--icon-primary-on-bg-fill);
+
+  /* other */
+  --color-other-red: #ee5858;
+  --color-other-green: #2db224;
+  --color-other-cyan: #2da5f3;
+  --color-other-yellow: #efd33d;
+}
+:root {
+  --bg-fill-primary: #16a34a;
+  --bg-fill-primary-hover: #15803d;
+  --bg-fill-primary-active: #166534;
+
+  --bg-fill-secondary: #06aed4;
+  --bg-fill-secondary-hover: #06aed4;
+  --bg-fill-secondary-active: #06aed4;
+
+  --bg-fill-info: #528bff;
+  --bg-fill-info-hover: #2970ff;
+  --bg-fill-info-active: #155eef;
+
+  --bg-fill-success: #47cd89;
+  --bg-fill-success-hover: #17b26a;
+  --bg-fill-success-active: #079455;
+
+  --bg-fill-warning: #fdb022;
+  --bg-fill-warning-hover: #f79009;
+  --bg-fill-warning-active: #dc6803;
+
+  --bg-fill-error: #f97066;
+  --bg-fill-error-hover: #f04438;
+  --bg-fill-error-active: #d92d20;
+
+  --bg-fill-inverse: #0a0a0a;
+
+  --bg-background: #ffffff;
+  --bg-secondary: #fafafa;
+  --bg-tertiary: #f5f5f5;
+
+  --text-default: #0c0e12;
+  --text-default-secondary: #414651;
+  --text-default-tertiary: #717680;
+  --text-disabled: #2500490e;
+  --text-primary: #16a34a;
+  --text-primary-hover: #15803d;
+  --text-secondary: #06aed4;
+  --text-secondary-hover: #088ab2;
+  --text-primary-on-bg-fill: #ffffff;
+  --text-info: #528bff;
+  --text-success: #47cd89;
+  --text-warning: #fdb022;
+  --text-error: #f97066;
+  --text-error-hover: #f04438;
+  --text-inverse: #f1f3f4;
+
+  --icon-icon: #414651;
+  --icon-hover: #252b37;
+  --icon-active: #717680;
+  --icon-primary: #16a34a;
+  --icon-primary-on-bg-fill: #ffffff;
+  --icon-info: #528bff;
+  --icon-success: #17b26a;
+  --icon-warning: #f79009;
+  --icon-error: #f04438;
+  --icon-inverse: #ffffff;
+
+  --border-border: #1c00371c;
+  --border-soft: #2500490e;
+  --border-hover: #17013423;
+  --border-disabled: #2f055806;
+  --border-solid: #a4a7ae;
+  --border-primary: rgba(22, 163, 74, 0.2);
+  --border-primary-solid: #16a34a;
+  --border-secondary: #06aed438;
+  --border-secondary-solid: #06aed4;
+  --border-info: #528bff39;
+  --border-success: #47cd8938;
+  --border-warning: #fdb02238;
+  --border-error: #f9706639;
+  --border-error-solid: #f04438;
+
+  --outline-focus: #16a34a99;
+  --outline-focus-soft: #f0fdf4;
+
+  --overlay-overlay: #16161999;
+
+  --scrollbar-track: #e0e0e0;
+  --scrollbar-thumb: #c1c1c1;
+  --scrollbar-thumb-hover: #888888;
+}
+* {
+  font-family: var(--font-sans);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}

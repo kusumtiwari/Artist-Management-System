@@ -15,7 +15,8 @@ const LoginForm = () => {
     mutate(data, {
       onSuccess: (res) => {
         localStorage.setItem("token", res.token);
-        navigate("/dashboard"); // change later if needed
+        
+        navigate("/dashboard"); 
       },
       onError: (err: any) => {
         console.error(err.message);
@@ -40,7 +41,7 @@ const LoginForm = () => {
             />
           </FormGroup>
 
-          <Button isLoading={false} type="submit" className="w-full mt-2">
+          <Button isLoading={isPending} type="submit" className="w-full mt-2">
             Login
           </Button>
           <div className="flex items-center justify-center gap-2 mt-2">

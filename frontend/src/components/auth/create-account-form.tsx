@@ -18,7 +18,6 @@ const CreateAccountForm = () => {
   }) => {
     mutate(data, {
       onSuccess: (res) => {
-        localStorage.setItem("token", res.token);
         navigate("/login");
       },
       onError: (err: any) => {

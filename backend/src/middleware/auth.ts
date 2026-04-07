@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import pool from "../config/db";
-import { AuthUtils } from "../utils/auth";
-import { User } from "../types";
+import { Request, Response, NextFunction } from 'express'
+import pool from '../config/db'
+import { AuthUtils } from '../utils/auth'
+import { User } from '../types'
 
 export const authenticateToken = async (
   req: Request,
@@ -9,54 +9,42 @@ export const authenticateToken = async (
   next: NextFunction,
 ) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+    const token = req.cookies?.token
 
     if (!token) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
-        message: "Access token is required",
-      });
+        message: 'Unauthorized',
+      })
+      return
     }
-
-    // Verify token
     const decoded = AuthUtils.verifyToken(token);
-
-    // Get user from database
+    console.log('decoded:', decoded)
     const [rows] = await pool.execute(
-      "SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?",
+      'SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?',
       [decoded.userId],
-    );
+    )
 
-    const users = rows as User[];
+    const users = rows as User[]
     if (users.length === 0) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
-        message: "User not found",
-      });
+        message: 'User not found',
+      })
+      return
     }
 
-    // Attach user to request (without password)
-    req.user = users[0];
-    next();
+    req.user = users[0]
+    next()
   } catch (error) {
-    if (error instanceof Error && error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token",
-      });
+    if (error instanceof Error && error.name === 'JsonWebTokenError') {
+      res.status(401).json({ success: false, message: 'Invalid token' })
+      return
     }
-
-    if (error instanceof Error && error.name === "TokenExpiredError") {
-      return res.status(401).json({
-        success: false,
-        message: "Token expired",
-      });
+    if (error instanceof Error && error.name === 'TokenExpiredError') {
+      res.status(401).json({ success: false, message: 'Token expired' })
+      return
     }
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    res.status(500).json({ success: false, message: 'Internal server error' })
   }
-};
+}

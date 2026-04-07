@@ -8,29 +8,31 @@ import { ROUTES } from "../../router/routes";
 import { useLogin } from "../../queries/auth";
 
 const LoginForm = () => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const { mutate, isPending } = useLogin();
 
-   const onSubmit = (data: { email: string; password: string }) => {
+  const onSubmit = (data: { email: string; password: string }) => {
     mutate(data, {
       onSuccess: (res) => {
-        localStorage.setItem("token", res.token);
-        
-        navigate("/dashboard"); 
+        navigate("/dashboard");
       },
       onError: (err: any) => {
         console.error(err.message);
       },
     });
   };
-  
+
   return (
     <Form onSubmit={onSubmit}>
       {({ register, formState: { errors } }) => (
         <FormContent className="gap-5">
           <FormGroup>
             <Label htmlFor="email">Email</Label>
-            <Input id="email" placeholder="Enter your email" {...register("email")}/>
+            <Input
+              id="email"
+              placeholder="Enter your email"
+              {...register("email")}
+            />
           </FormGroup>
 
           <FormGroup>

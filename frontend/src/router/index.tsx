@@ -1,16 +1,17 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from '../pages/auth/Login'
 import Register from '../pages/auth/Register'
-import Dashboard from '../pages/dashboard' // your new dashboard folder/index.tsx
-import { ROUTES } from './routes'
+import DashboardPage from '../pages/dashboard'
+import ProtectedRoute from './protected-route'
+import GuestRoute from './guest-route'
 
 export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={ROUTES.LOGIN} element={<Login />} />
-        <Route path={ROUTES.REGISTER} element={<Register />} />
-        <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+        <Route path="/" element={<GuestRoute><Login /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )

@@ -6,6 +6,9 @@ import { testConnection } from './config/db'
 import { initializeDatabase } from './config/initDb'
 import env from './config/env'
 import authRoutes from './routes/auth'
+import artistRoutes from './routes/artist'
+import songRoutes from './routes/song'
+import userRoutes from './routes/user'
 
 dotenv.config()
 
@@ -19,6 +22,9 @@ app.use(express.json())
 app.use(cookieParser()) 
 
 app.use('/api/auth', authRoutes)
+app.use('/api/artists', artistRoutes)
+app.use('/api/songs', songRoutes)
+app.use('/api/users', userRoutes)
 
 const start = async () => {
   await testConnection()

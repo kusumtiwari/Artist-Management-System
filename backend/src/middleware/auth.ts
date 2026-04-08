@@ -21,11 +21,11 @@ export const authenticateToken = async (
     const decoded = AuthUtils.verifyToken(token);
     console.log('decoded:', decoded)
     const [rows] = await pool.execute(
-      'SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?',
+      'SELECT id, first_name, last_name, email, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE id = ?',
       [decoded.userId],
     )
 
-    const users = rows as User[]
+    const users = rows as any[]
     if (users.length === 0) {
       res.status(401).json({
         success: false,
@@ -34,7 +34,11 @@ export const authenticateToken = async (
       return
     }
 
-    req.user = users[0]
+    const userRow = users[0]
+    req.user = {
+      ...userRow,
+      isAdmin: Boolean(userRow.isAdmin),
+    }
     next()
   } catch (error) {
     if (error instanceof Error && error.name === 'JsonWebTokenError') {
@@ -47,4 +51,12 @@ export const authenticateToken = async (
     }
     res.status(500).json({ success: false, message: 'Internal server error' })
   }
+}
+
+export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user?.isAdmin) {
+    return res.status(403).json({ success: false, message: 'Forbidden: admin access required' })
+  }
+
+  next()
 }

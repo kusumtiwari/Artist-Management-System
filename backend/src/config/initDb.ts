@@ -2,12 +2,9 @@ import pool from './db';
 
 export const initializeDatabase = async () => {
   try {
-    // Drop existing users table if it exists (to update schema)
-    await pool.execute('DROP TABLE IF EXISTS users');
-
-    // Create users table
+    // Create users table if it doesn't exist
     await pool.execute(`
-      CREATE TABLE users (
+      CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         first_name VARCHAR(50) NOT NULL,
         last_name VARCHAR(50) NOT NULL,

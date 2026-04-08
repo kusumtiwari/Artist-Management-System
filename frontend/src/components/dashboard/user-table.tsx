@@ -9,28 +9,32 @@ import {
   TableRow,
   TableSkeleton,
 } from "../ui/table";
-import { useUsers } from "../../queries/resources";
+import { useUsers, useDeleteUser } from "../../queries/resources";
 import { AddUserDialog } from "./add-user-dialog";
 import type { UsersResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
-import { SearchIcon } from "../../assets";
-import { Pencil, Trash2 } from "lucide-react";
+import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import DeleteModal from "../ui/delete-modal";
 
 const PAGE_SIZE = 10;
+const TOTAL_COLUMNS = 9;
 
 export function UsersTable() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const usersQuery = useUsers(page, PAGE_SIZE, search);
+  const deleteUser = useDeleteUser();
   const usersData = usersQuery.data as UsersResponse | undefined;
-  const TOTAL_COLUMNS = 9;
 
   const debouncedSearch = useMemo(
     () =>
       debounce((value: string) => {
-        setPage(1); // reset page on search
+        setPage(1);
         setSearch(value);
       }, 400),
     [],
@@ -40,14 +44,18 @@ export function UsersTable() {
     debouncedSearch(e.target.value);
   };
 
+  const handleDeleteUser = (userId: number) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      deleteUser.mutate(userId);
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
-        <div>
-          <p className="text-sm text-default-secondary">
-            Manage your registered users and access details.
-          </p>
-        </div>
+        <p className="text-sm text-default-secondary">
+          Manage your registered users and access details.
+        </p>
         <div className="flex items-center gap-2">
           <Input
             type="text"
@@ -57,7 +65,6 @@ export function UsersTable() {
             className="text-14 sm:w-[280px] h-9"
             onChange={handleSearchChange}
           />
-
           <AddUserDialog onUserCreated={() => usersQuery.refetch()} />
         </div>
       </div>
@@ -77,12 +84,10 @@ export function UsersTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {/* Loading */}
           {usersQuery.isLoading && (
             <TableSkeleton col={TOTAL_COLUMNS} row={5} />
           )}
 
-          {/* Empty state */}
           {!usersQuery.isLoading && usersData?.users.length === 0 && (
             <TableRow>
               <TableCell
@@ -94,43 +99,62 @@ export function UsersTable() {
             </TableRow>
           )}
 
-          {/* Data */}
           {!usersQuery.isLoading &&
             usersData?.users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="min-w-[180px]">
                   {user.first_name} {user.last_name}
                 </TableCell>
-
                 <TableCell className="min-w-[220px]">{user.email}</TableCell>
-
                 <TableCell className="min-w-[160px]">
                   {user.phone ?? "—"}
                 </TableCell>
-
                 <TableCell className="min-w-[140px]">
                   {user.gender ?? "—"}
                 </TableCell>
-
                 <TableCell className="min-w-[160px]">
                   {user.dob ? new Date(user.dob).toLocaleDateString() : "—"}
                 </TableCell>
-
                 <TableCell className="min-w-[220px] truncate">
                   {user.address ?? "—"}
                 </TableCell>
-
                 <TableCell className="min-w-[180px]">
                   {new Date(user.created_at).toLocaleDateString()}
                 </TableCell>
-
                 <TableCell className="min-w-[180px]">
                   {new Date(user.updated_at).toLocaleDateString()}
                 </TableCell>
-
                 <TableCell className="min-w-[140px]">
-                  {/* Replace with your actions */}
-                  <button className="text-primary hover:underline">View</button>
+                  {user.isAdmin ? (
+                    <span className="text-default-tertiary">—</span>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <AddUserDialog
+                        mode="edit"
+                        initialValues={{
+                          ...user,
+                          dob: user.dob ? new Date(user.dob) : null,
+                          id: user.id,
+                        }}
+                        onUserCreated={() => usersQuery.refetch()}
+                        trigger={
+                          <button className="text-black hover:text-primary transition-colors">
+                            <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />
+                          </button>
+                        }
+                      />
+                      <button
+                        className="text-icon hover:text-error transition-colors"
+                        disabled={deleteUser.isPending}
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setIsDeleteOpen(true);
+                        }}
+                      >
+                        <Trash01Icon className="text-fill-error w-6 h-5 cursor-pointer" />
+                      </button>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -140,10 +164,36 @@ export function UsersTable() {
           pageSize={PAGE_SIZE}
           page={page}
           isLoading={usersQuery.isLoading}
-          totalColumns={4}
+          totalColumns={TOTAL_COLUMNS}
           onPageChange={setPage}
         />
       </Table>
+
+      <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+        <DialogContent className="!p-0">
+          <DeleteModal
+            title="Delete user"
+            isDeleting={deleteUser.isPending}
+            onDelete={() => {
+              if (!selectedUser) return;
+
+              deleteUser.mutate(selectedUser.id, {
+                onSuccess: () => {
+                  setIsDeleteOpen(false);
+                  setSelectedUser(null);
+                  usersQuery.refetch();
+                },
+              });
+            }}
+          >
+            Are you sure you want to delete{" "}
+            <b>
+              {selectedUser?.first_name} {selectedUser?.last_name}
+            </b>
+            ?
+          </DeleteModal>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

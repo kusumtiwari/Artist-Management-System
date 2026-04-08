@@ -4,15 +4,16 @@ import { authenticateToken, authorizeAdmin } from '../middleware/auth';
 
 const router = express.Router();
 
-// All routes require authentication and admin permissions
+// All routes require authentication
 router.use(authenticateToken);
-router.use(authorizeAdmin);
 
-// User CRUD routes
-router.post('/', UserController.create);
-router.get('/', UserController.getAll);
-router.get('/:id', UserController.getById);
-router.put('/:id', UserController.update);
-router.delete('/:id', UserController.delete);
+// Admin-only routes (create, list, manage users)
+router.post('/', authorizeAdmin, UserController.create);
+router.get('/', authorizeAdmin, UserController.getAll);
+router.get('/:id', authorizeAdmin, UserController.getById);
+
+// User can edit/delete own profile or admin can edit/delete any user
+router.patch('/:id', UserController.updateUser);
+router.delete('/:id', UserController.deleteUser);
 
 export default router;

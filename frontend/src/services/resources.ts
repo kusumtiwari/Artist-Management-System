@@ -7,6 +7,7 @@ import type {
   CreateUserPayload,
   UsersResponse,
 } from '../types/resources'
+import type { User } from '../types/auth'
 
 export const resourcesService = {
   fetchUsers: async (page = 1, pageSize = 10, search=''): Promise<UsersResponse> => {
@@ -25,6 +26,16 @@ export const resourcesService = {
 
   createUser: async (data: CreateUserPayload): Promise<UsersResponse> => {
     const res = await api.post(ENDPOINTS.USERS.CREATE, data)
+    return res.data
+  },
+
+  updateUser: async (userId: number, data: Partial<CreateUserPayload>): Promise<{ success: boolean; user: User }> => {
+    const res = await api.patch(`${ENDPOINTS.USERS.LIST}/${userId}`, data)
+    return res.data
+  },
+
+  deleteUser: async (userId: number): Promise<{ success: boolean; message: string }> => {
+    const res = await api.delete(`${ENDPOINTS.USERS.LIST}/${userId}`)
     return res.data
   },
 

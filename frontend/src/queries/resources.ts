@@ -34,6 +34,29 @@ export const useCreateUser = () => {
   })
 }
 
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ userId, data }: { userId: number; data: Partial<CreateUserPayload> }) =>
+      resourcesService.updateUser(userId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+}
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (userId: number) => resourcesService.deleteUser(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+}
+
 export const useCreateArtist = () => {
   const queryClient = useQueryClient()
 

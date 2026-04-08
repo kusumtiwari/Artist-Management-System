@@ -7,3 +7,5 @@ export { default as Check02Icon } from './check-02-filled.svg';
 export { default as Calendar02Icon } from './calendar-02.svg';
 export { default as AlertCircleIcon } from './alert-circle.svg';
 export { default as SearchIcon } from './search.svg';
+export { default as Edit03Icon } from './edit-03.svg';
+export { default as Trash01Icon } from './trash-01.svg';

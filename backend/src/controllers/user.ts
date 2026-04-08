@@ -143,6 +143,86 @@ export class UserController {
     }
   }
 
+  static async updateUser(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id as string);
+      const updateData: Partial<CreateUserData> = req.body;
+      const currentUserId = req.user?.id;
+      const isAdmin = req.user?.isAdmin;
+
+      // Allow update if user is editing their own profile OR is admin
+      if (currentUserId !== id && !isAdmin) {
+        return res.status(403).json({ success: false, message: 'Forbidden: you can only edit your own profile' });
+      }
+
+      // Validate if user exists
+      const existingUser = await UserModel.findById(id);
+      if (!existingUser) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      // Prevent non-admins from changing isAdmin flag
+      if (!isAdmin && updateData.isAdmin !== undefined) {
+        delete updateData.isAdmin;
+      }
+
+      // Hash password if provided
+      let hashedPassword;
+      if (updateData.password) {
+        if (updateData.password.length < 6) {
+          return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        }
+        hashedPassword = await AuthUtils.hashPassword(updateData.password);
+      }
+
+      // Map gender value if provided
+      const mappedGender = updateData.gender ? mapGenderValue(updateData.gender) : undefined;
+
+      // Update user
+      const updatedUser = await UserModel.update(id, { ...updateData, gender: mappedGender }, hashedPassword);
+
+      if (!updatedUser) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      // Return user without password
+      const { password, ...userWithoutPassword } = updatedUser;
+
+      res.status(200).json({ success: true, user: userWithoutPassword });
+    } catch (err: any) {
+      res.status(400).json({ success: false, message: err.message });
+    }
+  }
+
+  static async deleteUser(req: Request, res: Response) {
+    try {
+      const id = parseInt(req.params.id as string);
+      const currentUserId = req.user?.id;
+      const isAdmin = req.user?.isAdmin;
+
+      // Allow delete if user is deleting their own account OR is admin
+      if (currentUserId !== id && !isAdmin) {
+        return res.status(403).json({ success: false, message: 'Forbidden: you can only delete your own account' });
+      }
+
+      // Check if user exists
+      const user = await UserModel.findById(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      const deleted = await UserModel.delete(id);
+
+      if (!deleted) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      res.status(200).json({ success: true, message: 'User deleted successfully' });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  }
+
   static async delete(req: Request, res: Response) {
     try {
       const id = parseInt(req.params.id as string);

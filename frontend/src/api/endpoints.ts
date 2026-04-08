@@ -5,4 +5,12 @@ export const ENDPOINTS = {
     ME: '/api/auth/me',
     LOGOUT: '/api/auth/logout',
   },
+  USERS: {
+    LIST: '/api/users',
+    CREATE: '/api/users',
+  },
+  ARTISTS: {
+    LIST: '/api/artists',
+    CREATE: '/api/artists',
+  },
 }

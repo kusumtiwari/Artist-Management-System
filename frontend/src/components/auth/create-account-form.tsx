@@ -14,7 +14,8 @@ const CreateAccountForm = () => {
   const onSubmit = (data: {
     email: string;
     password: string;
-    username: string;
+    first_name: string;
+    last_name: string;
   }) => {
     mutate(data, {
       onSuccess: (res) => {
@@ -39,11 +40,20 @@ const CreateAccountForm = () => {
           </FormGroup>
 
           <FormGroup>
-            <Label htmlFor="username">Username</Label>
+            <Label htmlFor="first_name">First Name</Label>
             <Input
-              id="username"
-              placeholder="Enter your username"
-              {...register("username")}
+              id="first_name"
+              placeholder="Enter your first name"
+              {...register("first_name")}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label htmlFor="last_name">Last Name</Label>
+            <Input
+              id="last_name"
+              placeholder="Enter your last name"
+              {...register("last_name")}
             />
           </FormGroup>
 

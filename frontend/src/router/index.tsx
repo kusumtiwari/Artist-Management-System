@@ -9,9 +9,9 @@ export default function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<GuestRoute><Login /></GuestRoute>} />
+        <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
         <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
-        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )

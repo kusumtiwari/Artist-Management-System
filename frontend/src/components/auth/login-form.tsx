@@ -14,7 +14,7 @@ const LoginForm = () => {
   const onSubmit = (data: { email: string; password: string }) => {
     mutate(data, {
       onSuccess: (res) => {
-        navigate("/dashboard");
+        navigate("/");
       },
       onError: (err: any) => {
         console.error(err.message);

@@ -1,3 +1,9 @@
 export { default as EyeOpenIcon } from './eye-open.svg';
 export { default as EyeClosedIcon } from './eye-closed.svg';
 export { default as ChevronLeftIcon } from './chevron-left.svg';
+export { default as XIcon } from './x.svg';
+export { default as ChevronDownIcon } from './chevron-down.svg';
+export { default as Check02Icon } from './check-02-filled.svg';
+export { default as Calendar02Icon } from './calendar-02.svg';
+export { default as AlertCircleIcon } from './alert-circle.svg';
+export { default as SearchIcon } from './search.svg';

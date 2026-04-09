@@ -37,8 +37,8 @@ export default function DashboardPage() {
 
   const handleLogout = () => {
     logout.mutate(undefined, {
-      onSuccess: () => navigate('/'),
-      onError: () => navigate('/'),
+      onSuccess: () => navigate('/login'),
+      onError: () => navigate('/login'),
     })
   }
 

@@ -45,12 +45,6 @@ export function UsersTable() {
     debouncedSearch(e.target.value);
   };
 
-  const handleDeleteUser = (userId: number) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      deleteUser.mutate(userId);
-    }
-  };
-
   return (
     <div>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">

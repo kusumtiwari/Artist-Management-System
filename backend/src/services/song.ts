@@ -9,7 +9,7 @@ export class SongService {
     }
 
     // Validate genre enum
-    const validGenres = ['pop', 'rock', 'jazz', 'classical', 'hip-hop', 'electronic', 'country', 'other'];
+    const validGenres = ['rnb', 'country', 'classic', 'rock', 'jazz'];
     if (!validGenres.includes(songData.genre)) {
       throw new Error('Invalid genre value');
     }
@@ -46,7 +46,7 @@ export class SongService {
 
     // Validate genre if provided
     if (songData.genre) {
-      const validGenres = ['pop', 'rock', 'jazz', 'classical', 'hip-hop', 'electronic', 'country', 'other'];
+      const validGenres = ['rnb', 'country', 'classic', 'rock', 'jazz'];
       if (!validGenres.includes(songData.genre)) {
         throw new Error('Invalid genre value');
       }

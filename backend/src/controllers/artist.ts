@@ -21,17 +21,22 @@ export class ArtistController {
   static async getAll(req: Request, res: Response) {
     try {
       const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 10;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+      const search = req.query.search as string;
+      const offset = (page - 1) * pageSize;
 
-      const result = await ArtistService.getAll(page, limit);
+      const artists = await ArtistService.findAll(pageSize, offset, search);
+      const total = await ArtistService.count(search);
+      const totalPages = Math.ceil(total / pageSize);
+
       res.status(200).json({
         success: true,
-        artists: result.artists,
+        artists: artists,
         pagination: {
           page,
-          limit,
-          total: result.total,
-          totalPages: result.totalPages
+          pageSize,
+          total,
+          totalPages
         }
       });
     } catch (err: any) {

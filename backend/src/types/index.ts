@@ -1,4 +1,3 @@
-import { Request } from 'express';
 
 export interface User {
   id: number;
@@ -40,7 +39,7 @@ export interface AuthResponse {
 export interface Artist {
   id: number;
   name: string;
-  dob: string | null;
+  dob: Date | null;
   gender: 'male' | 'female' | 'other';
   address: string | null;
   first_release_year: number | null;
@@ -63,7 +62,7 @@ export interface Song {
   artist_id: number;
   title: string;
   album_name: string | null;
-  genre: 'pop' | 'rock' | 'jazz' | 'classical' | 'hip-hop' | 'electronic' | 'country' | 'other';
+  genre: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz';
   created_at: Date;
   updated_at: Date;
 }
@@ -72,7 +71,7 @@ export interface CreateSongData {
   artist_id: number;
   title: string;
   album_name?: string;
-  genre: 'pop' | 'rock' | 'jazz' | 'classical' | 'hip-hop' | 'electronic' | 'country' | 'other';
+  genre: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz';
 }
 
 export interface SongWithArtist extends Song {

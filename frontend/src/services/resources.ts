@@ -17,9 +17,9 @@ export const resourcesService = {
     return res.data
   },
 
-  fetchArtists: async (page = 1, pageSize = 10): Promise<ArtistsResponse> => {
+  fetchArtists: async (page = 1, pageSize = 10, search = ''): Promise<ArtistsResponse> => {
     const res = await api.get(ENDPOINTS.ARTISTS.LIST, {
-      params: { page, pageSize },
+      params: { page, pageSize, search },
     })
     return res.data
   },
@@ -43,4 +43,14 @@ export const resourcesService = {
     const res = await api.post(ENDPOINTS.ARTISTS.CREATE, data)
     return res.data
   },
+
+  updateArtist: async (artistId: number, data: Partial<CreateArtistPayload>): Promise<{ success: boolean; artist: Artist }> => {
+    const res = await api.patch(`${ENDPOINTS.ARTISTS.LIST}/${artistId}`, data)
+    return res.data
+  },
+
+  deleteArtist: async (artistId: number): Promise<{ success: boolean; message: string }> => {
+    const res = await api.delete(`${ENDPOINTS.ARTISTS.LIST}/${artistId}`)
+    return res.data
+  }
 }

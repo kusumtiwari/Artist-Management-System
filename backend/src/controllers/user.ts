@@ -16,6 +16,12 @@ const mapGenderValue = (gender?: string): 'male' | 'female' | 'other' | undefine
   return genderMap[gender];
 };
 
+const validatePhone = (phone?: string): boolean => {
+  if (!phone) return true; // Phone is optional
+  // Only allow digits and + character
+  return /^[+]?[0-9]{1,20}$/.test(phone);
+};
+
 export class UserController {
   static async create(req: Request, res: Response) {
     try {
@@ -28,6 +34,11 @@ export class UserController {
 
       if (userData.password.length < 6) {
         return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+      }
+
+      // Validate phone format
+      if (!validatePhone(userData.phone)) {
+        return res.status(400).json({ success: false, message: 'Phone can only contain digits and +' });
       }
 
       // Check if user exists
@@ -115,6 +126,11 @@ export class UserController {
         return res.status(404).json({ success: false, message: 'User not found' });
       }
 
+      // Validate phone format if provided
+      if (updateData.phone && !validatePhone(updateData.phone)) {
+        return res.status(400).json({ success: false, message: 'Phone can only contain digits and +' });
+      }
+
       // Hash password if provided
       let hashedPassword;
       if (updateData.password) {
@@ -159,6 +175,11 @@ export class UserController {
       const existingUser = await UserModel.findById(id);
       if (!existingUser) {
         return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      // Validate phone format if provided
+      if (updateData.phone && !validatePhone(updateData.phone)) {
+        return res.status(400).json({ success: false, message: 'Phone can only contain digits and +' });
       }
 
       // Prevent non-admins from changing isAdmin flag

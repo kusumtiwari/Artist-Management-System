@@ -5,7 +5,6 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TablePaginationRow,
   TableRow,
   TableSkeleton,
 } from "../ui/table";
@@ -15,7 +14,7 @@ import type { UsersResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
 import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
-import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent } from "../ui/dialog";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
 
@@ -57,7 +56,7 @@ export function UsersTable() {
             prefixIcon={SearchIcon}
             placeholder="Search users..."
             prefixIconClassname="text-default-tertiary"
-            className="text-14 sm:w-[280px] h-9"
+            className="text-14 sm:w-70 h-9"
             onChange={handleSearchChange}
           />
           <AddUserDialog onUserCreated={() => usersQuery.refetch()} />
@@ -97,29 +96,29 @@ export function UsersTable() {
           {!usersQuery.isLoading &&
             usersData?.users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="min-w-[180px]">
+                <TableCell className="min-w-45">
                   {user.first_name} {user.last_name}
                 </TableCell>
-                <TableCell className="min-w-[220px]">{user.email}</TableCell>
-                <TableCell className="min-w-[160px]">
+                <TableCell className="min-w-55">{user.email}</TableCell>
+                <TableCell className="min-w-40">
                   {user.phone ?? "—"}
                 </TableCell>
-                <TableCell className="min-w-[140px]">
+                <TableCell className="min-w-35">
                   {user.gender ?? "—"}
                 </TableCell>
-                <TableCell className="min-w-[160px]">
+                <TableCell className="min-w-40">
                   {user.dob ? new Date(user.dob).toLocaleDateString() : "—"}
                 </TableCell>
-                <TableCell className="min-w-[220px] truncate">
+                <TableCell className="min-w-55 truncate">
                   {user.address ?? "—"}
                 </TableCell>
-                <TableCell className="min-w-[180px]">
+                <TableCell className="min-w-45">
                   {new Date(user.created_at).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="min-w-[180px]">
+                <TableCell className="min-w-45">
                   {new Date(user.updated_at).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="min-w-[100px]">
+                <TableCell className="min-w-25">
                   {user.isAdmin ? (
                     <span className="text-default-tertiary">—</span>
                   ) : (
@@ -167,7 +166,7 @@ export function UsersTable() {
       )}
 
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="!p-0">
+        <DialogContent className="p-0!">
           <DeleteModal
             title="Delete user"
             isDeleting={deleteUser.isPending}

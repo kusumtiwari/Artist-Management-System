@@ -33,21 +33,35 @@ export class ArtistModel {
     return artists.length ? artists[0] : null;
   }
 
-  static async findAll(limit: number = 10, offset: number = 0): Promise<Artist[]> {
+  static async findAll(limit: number = 10, offset: number = 0, search: string = ''): Promise<Artist[]> {
     const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 10;
     const safeOffset = Number.isInteger(offset) && offset >= 0 ? offset : 0;
-    const query = `SELECT * FROM artists ORDER BY created_at DESC LIMIT ${safeLimit} OFFSET ${safeOffset}`;
+    
+    let query = `SELECT * FROM artists`;
+    const params: any[] = [];
 
-    const [rows] = await pool.execute(query);
+    if (search) {
+      query += ` WHERE name LIKE ?`;
+      params.push(`%${search}%`);
+    }
+
+    query += ` ORDER BY created_at DESC LIMIT ${safeLimit} OFFSET ${safeOffset}`;
+
+    const [rows] = await pool.execute(query, params);
 
     return rows as Artist[];
   }
 
-  static async count(): Promise<number> {
-    const [rows]: any = await pool.execute(
-      'SELECT COUNT(*) as count FROM artists'
-    );
+  static async count(search: string = ''): Promise<number> {
+    let query = 'SELECT COUNT(*) as count FROM artists';
+    const params: any[] = [];
 
+    if (search) {
+      query += ` WHERE name LIKE ?`;
+      params.push(`%${search}%`);
+    }
+
+    const [rows]: any = await pool.execute(query, params);
     return rows[0].count;
   }
 

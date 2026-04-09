@@ -16,10 +16,10 @@ export const useUsers = (page: number, pageSize = 10, search: string) => {
   })
 }
 
-export const useArtists = (page: number, pageSize = 10) => {
+export const useArtists = (page: number, pageSize = 10, search: string = '') => {
   return useQuery<ArtistsResponse>({
-    queryKey: ['artists', page],
-    queryFn: () => resourcesService.fetchArtists(page, pageSize),
+    queryKey: ['artists', page, search],
+    queryFn: () => resourcesService.fetchArtists(page, pageSize, search),
     placeholderData: (previousData) => previousData,
   })
 }
@@ -85,6 +85,39 @@ export const useCreateArtist = () => {
     },
     onError: (error) => {
       showToast(error instanceof Error ? error.message : 'Create artist failed', 'error')
+    },
+  })
+}
+
+export const useUpdateArtist = () => {
+  const queryClient = useQueryClient()
+  const { showToast } = useToast()
+
+  return useMutation({
+    mutationFn: ({ artistId, data }: { artistId: number; data: Partial<CreateArtistPayload> }) =>
+      resourcesService.updateArtist(artistId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['artists'] })
+      showToast('Artist updated successfully', 'success')
+    },
+    onError: (error) => {
+      showToast(error instanceof Error ? error.message : 'Update artist failed', 'error')
+    },
+  })
+}
+
+export const useDeleteArtist = () => {
+  const queryClient = useQueryClient()
+  const { showToast } = useToast()
+
+  return useMutation({
+    mutationFn: (artistId: number) => resourcesService.deleteArtist(artistId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['artists'] })
+      showToast('Artist deleted successfully', 'success')
+    },
+    onError: (error) => {
+      showToast(error instanceof Error ? error.message : 'Delete artist failed', 'error')
     },
   })
 }

@@ -22,10 +22,11 @@ export interface ArtistsResponse {
 export interface Artist {
   id: number
   name: string
-  genre: string
-  email?: string
-  phone?: string
-  status?: 'active' | 'inactive'
+  dob: string | null
+  gender: 'male' | 'female' | 'other'
+  address: string | null
+  first_release_year: number | null
+  no_of_albums_released: number
   created_at: string
   updated_at: string
 }
@@ -39,7 +40,40 @@ export interface CreateUserPayload {
 
 export interface CreateArtistPayload {
   name: string
-  genre: string
-  email?: string
-  status?: 'active' | 'inactive'
+  dob?: string
+  gender?: 'male' | 'female' | 'other'
+  address?: string
+  first_release_year?: number
+  no_of_albums_released?: number
+}
+
+export interface Song {
+  id: number
+  title: string
+  artist_id: number
+  album_name?: string | null
+  genre: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz'
+  created_at: string
+  updated_at: string
+}
+
+export interface SongWithArtist extends Song {
+  artist?: Artist
+}
+
+export interface SongsResponse {
+  success: boolean
+  songs: SongWithArtist[]
+  pagination: Pagination
+}
+
+export interface CreateSongPayload {
+  title: string
+  artist_id: number
+  album_name?: string
+  genre: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz'
+}
+
+export interface UpdateSongPayload extends Partial<CreateSongPayload> {
+  id: number
 }

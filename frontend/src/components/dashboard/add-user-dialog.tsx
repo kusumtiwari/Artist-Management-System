@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -110,8 +109,8 @@ export function AddUserDialog({
         )}
       </DialogTrigger>
 
-      <DialogContent className="max-w-xl md:w-[900px] space-y-2 max-h-[90vh] overflow-auto">
-        <DialogHeader className="!p-0">
+      <DialogContent className="max-w-xl md:w-225 space-y-2 max-h-[90vh] overflow-auto">
+        <DialogHeader className="p-0!">
           <DialogTitle>{mode === "edit" ? "Edit user" : "Add new user"}</DialogTitle>
         </DialogHeader>
 

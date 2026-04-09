@@ -36,6 +36,14 @@ export class ArtistService {
     return { artists, total, totalPages };
   }
 
+  static async findAll(limit: number = 10, offset: number = 0, search: string = ''): Promise<Artist[]> {
+    return ArtistModel.findAll(limit, offset, search);
+  }
+
+  static async count(search: string = ''): Promise<number> {
+    return ArtistModel.count(search);
+  }
+
   static async getById(id: number): Promise<Artist | null> {
     return ArtistModel.findById(id);
   }

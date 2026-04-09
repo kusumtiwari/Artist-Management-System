@@ -27,7 +27,7 @@ router.use(authenticateToken);
 router.post('/', ArtistController.create);
 router.get('/', ArtistController.getAll);
 router.get('/:id', ArtistController.getById);
-router.put('/:id', ArtistController.update);
+router.patch('/:id', ArtistController.update);
 router.delete('/:id', ArtistController.delete);
 
 // CSV import/export routes

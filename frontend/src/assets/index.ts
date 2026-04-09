@@ -9,3 +9,4 @@ export { default as AlertCircleIcon } from './alert-circle.svg';
 export { default as SearchIcon } from './search.svg';
 export { default as Edit03Icon } from './edit-03.svg';
 export { default as Trash01Icon } from './trash-01.svg';
+export { default as UserIcon } from './user.svg';

@@ -24,15 +24,14 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean
   children?: ReactNode
 }
-
 const intentStyles: Record<ButtonIntent, string> = {
-  primary:   'text-white disabled:opacity-50',
-  secondary: 'text-white disabled:opacity-50',
-  outline:   'bg-transparent border disabled:opacity-50',
-  ghost:     'bg-transparent disabled:opacity-50',
-  danger:    'text-white disabled:opacity-50',
-  dangerOutline: 'bg-transparent border disabled:opacity-50',
-  link:      'bg-transparent underline-offset-4 hover:underline disabled:opacity-50',
+  primary:      'text-white disabled:opacity-50 hover:opacity-90 active:scale-[0.98]',
+  secondary:    'text-white disabled:opacity-50 hover:opacity-90 active:scale-[0.98]',
+  outline:      'bg-transparent border disabled:opacity-50 hover:bg-gray-50 active:scale-[0.98]',
+  ghost:        'bg-transparent disabled:opacity-50 hover:bg-gray-100 active:scale-[0.98]',
+  danger:       'text-white disabled:opacity-50 hover:opacity-90 active:scale-[0.98]',
+  dangerOutline:'bg-transparent border disabled:opacity-50 hover:bg-red-50 active:scale-[0.98]',
+  link:         'bg-transparent underline-offset-4 hover:underline disabled:opacity-50',
 }
 
 const intentInlineStyles: Record<ButtonIntent, React.CSSProperties> = {

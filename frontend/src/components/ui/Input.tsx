@@ -71,7 +71,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             // size === 'small' ? 'h-9' : 'h-11'
           )}
         >
-          {prefix && <span className="text-default mr-1 ">{prefix}</span>}
+          {prefix && <span className="text-default mr-1  ">{prefix}</span>}
           {PrefixIcon && <PrefixIcon className={cn('size-5', prefixIconClassname)} />}
           <input type={type} className={inputStyles} ref={ref} disabled={disabled} {...props} />
           {suffix && <span className="text-default ml-1">{suffix}</span>}

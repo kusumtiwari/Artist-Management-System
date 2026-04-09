@@ -17,6 +17,7 @@ import { debounce } from "../../utils/debounce";
 import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 import DeleteModal from "../ui/delete-modal";
+import Pagination from "../ui/pagination";
 
 const PAGE_SIZE = 10;
 const TOTAL_COLUMNS = 9;
@@ -124,7 +125,7 @@ export function UsersTable() {
                 <TableCell className="min-w-[180px]">
                   {new Date(user.updated_at).toLocaleDateString()}
                 </TableCell>
-                <TableCell className="min-w-[140px]">
+                <TableCell className="min-w-[100px]">
                   {user.isAdmin ? (
                     <span className="text-default-tertiary">—</span>
                   ) : (
@@ -159,15 +160,17 @@ export function UsersTable() {
               </TableRow>
             ))}
         </TableBody>
-        <TablePaginationRow
-          total={usersData?.total ?? 0}
-          pageSize={PAGE_SIZE}
-          page={page}
-          isLoading={usersQuery.isLoading}
-          totalColumns={TOTAL_COLUMNS}
-          onPageChange={setPage}
-        />
+        
       </Table>
+       {!usersQuery.isLoading && (usersData?.pagination?.total ?? 0) > PAGE_SIZE && (
+        <div className="flex justify-end mt-4">
+          <Pagination
+            currentPage={page}
+            pageCount={Math.ceil((usersData?.pagination?.total ?? 0) / PAGE_SIZE)}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
 
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="!p-0">

@@ -18,7 +18,6 @@ export class AuthUtils {
   }
 
   // Generate JWT token
-
   static generateToken(userId: number): string {
     const payload = { userId };
 

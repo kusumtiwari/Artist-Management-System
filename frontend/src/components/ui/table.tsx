@@ -18,7 +18,7 @@ const Table = React.forwardRef<
     )}
   >
     <table
-      className={cn("min-w-max w-full caption-bottom text-sm", className)}
+      className={cn("min-w-max w-full caption-bottom text-sm scrollbar-thin", className)}
       {...props}
     />
   </div>

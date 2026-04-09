@@ -47,7 +47,7 @@ export default function DashboardPage() {
       className="min-h-screen flex flex-col"
       style={{ background: 'var(--bg-background)' }}
     >
-      <Topbar username={username} onLogout={handleLogout} />
+      <Topbar username={username} onLogout={handleLogout} role={currentUser?.isAdmin ? 'admin' : 'user'} />
 
       <main className="flex-1 px-6 py-6 max-w-7xl w-full mx-auto">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-6">

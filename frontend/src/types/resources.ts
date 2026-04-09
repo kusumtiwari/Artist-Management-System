@@ -1,11 +1,22 @@
 import type { User } from './auth'
 
-export interface PaginatedList<T> {
-  users: T[]
-  artists: T[]
-  total: number
+export interface Pagination {
   page: number
   pageSize: number
+  total: number
+  totalPages: number
+}
+
+export interface UsersResponse {
+  success: boolean
+  users: User[]
+  pagination: Pagination
+}
+
+export interface ArtistsResponse {
+  success: boolean
+  artists: Artist[]
+  pagination: Pagination
 }
 
 export interface Artist {
@@ -18,9 +29,6 @@ export interface Artist {
   created_at: string
   updated_at: string
 }
-
-export type UsersResponse = PaginatedList<User>
-export type ArtistsResponse = PaginatedList<Artist>
 
 export interface CreateUserPayload {
   first_name: string

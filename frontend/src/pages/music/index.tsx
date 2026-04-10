@@ -2,16 +2,19 @@ import { useParams } from 'react-router-dom'
 import { DashboardLayout } from '../../components/layout/dashboard-layout'
 import { SongsTable } from '../../components/dashboard/songs-table'
 import { useMe, useLogout } from '../../queries/auth'
+import { useArtist } from '../../queries/resources'
 import { useNavigate } from 'react-router-dom'
 
 const ArtistMusicPage = () => {
   const { id } = useParams<{ id: string }>()
+  const artistId = id ? parseInt(id, 10) : 0
   const { data: currentUser } = useMe()
+  const { data: artist } = useArtist(artistId)
   const logout = useLogout()
   const navigate = useNavigate()
 
-  const artistId = id ? parseInt(id, 10) : 0
   const username = currentUser ? `${currentUser.first_name} ${currentUser.last_name}` : 'Admin'
+  const artistName = artist?.name || 'Unknown Artist'
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -44,7 +47,7 @@ const ArtistMusicPage = () => {
           <h1 className="text-2xl font-bold text-text-default">Artist Songs</h1>
           <p className="text-text-default-secondary">Manage songs for this artist</p>
         </div>
-        <SongsTable artistId={artistId} artistName="" />
+        <SongsTable artistId={artistId} artistName={artistName} />
       </div>
     </DashboardLayout>
   )

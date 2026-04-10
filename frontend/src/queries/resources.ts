@@ -24,6 +24,14 @@ export const useArtists = (page: number, pageSize = 10, search: string = '') => 
   })
 }
 
+export const useArtist = (id: number) => {
+  return useQuery({
+    queryKey: ['artist', id],
+    queryFn: () => resourcesService.fetchArtist(id),
+    enabled: !!id,
+  })
+}
+
 export const useCreateUser = () => {
   const queryClient = useQueryClient()
   const { showToast } = useToast()

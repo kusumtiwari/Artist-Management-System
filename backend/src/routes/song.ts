@@ -11,7 +11,7 @@ router.use(authenticateToken);
 router.post('/', SongController.create);
 router.get('/artist/:artistId', SongController.getByArtistId);
 router.get('/:id', SongController.getById);
-router.put('/:id', SongController.update);
+router.patch('/:id', SongController.update);
 router.delete('/:id', SongController.delete);
 
 export default router;

@@ -15,4 +15,12 @@ export const ENDPOINTS = {
     EXPORT_CSV: '/api/artists/export/csv',
     IMPORT_CSV: '/api/artists/import/csv',
   },
+  SONGS: {
+    LIST: '/api/songs',
+    CREATE: '/api/songs',
+    BY_ARTIST: '/api/songs/artist',
+    DETAIL: '/api/songs',
+    UPDATE: '/api/songs',
+    DELETE: '/api/songs',
+  },
 }

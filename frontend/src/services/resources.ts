@@ -24,6 +24,11 @@ export const resourcesService = {
     return res.data
   },
 
+  fetchArtist: async (id: number): Promise<Artist> => {
+    const res = await api.get(`${ENDPOINTS.ARTISTS.LIST}/${id}`)
+    return res.data.artist
+  },
+
   createUser: async (data: CreateUserPayload): Promise<UsersResponse> => {
     const res = await api.post(ENDPOINTS.USERS.CREATE, data)
     return res.data

@@ -24,10 +24,10 @@ export class SongService {
     return SongModel.create(songData);
   }
 
-  static async getByArtistId(artistId: number, page: number = 1, limit: number = 10): Promise<{ songs: SongWithArtist[], total: number, totalPages: number }> {
+  static async getByArtistId(artistId: number, page: number = 1, limit: number = 10, search: string = ''): Promise<{ songs: SongWithArtist[], total: number, totalPages: number }> {
     const offset = (page - 1) * limit;
-    const songs = await SongModel.findByArtistId(artistId, limit, offset);
-    const total = await SongModel.countByArtistId(artistId);
+    const songs = await SongModel.findByArtistId(artistId, limit, offset, search);
+    const total = await SongModel.countByArtistId(artistId, search);
     const totalPages = Math.ceil(total / limit);
 
     return { songs, total, totalPages };

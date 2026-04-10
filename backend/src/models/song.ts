@@ -31,26 +31,37 @@ export class SongModel {
     return songs.length ? songs[0] : null;
   }
 
-  static async findByArtistId(artistId: number, limit: number = 10, offset: number = 0): Promise<SongWithArtist[]> {
+  static async findByArtistId(artistId: number, limit: number = 10, offset: number = 0, search: string = ''): Promise<SongWithArtist[]> {
     const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 10;
     const safeOffset = Number.isInteger(offset) && offset >= 0 ? offset : 0;
+    const searchClause = search ? 'AND s.title LIKE ?' : '';
     const query = `SELECT s.*, a.name as artist_name
        FROM songs s
        JOIN artists a ON s.artist_id = a.id
-       WHERE s.artist_id = ?
+       WHERE s.artist_id = ? ${searchClause}
        ORDER BY s.created_at DESC
        LIMIT ${safeLimit} OFFSET ${safeOffset}`;
 
-    const [rows] = await pool.execute(query, [artistId]);
+    const queryParams: (string | number)[] = [artistId];
+    if (search) {
+      queryParams.push(`%${search}%`);
+    }
+
+    const [rows] = await pool.execute(query, queryParams);
 
     return rows as SongWithArtist[];
   }
 
-  static async countByArtistId(artistId: number): Promise<number> {
-    const [rows]: any = await pool.execute(
-      'SELECT COUNT(*) as count FROM songs WHERE artist_id = ?',
-      [artistId]
-    );
+  static async countByArtistId(artistId: number, search: string = ''): Promise<number> {
+    const searchClause = search ? 'AND title LIKE ?' : '';
+    const query = `SELECT COUNT(*) as count FROM songs WHERE artist_id = ? ${searchClause}`;
+    const params: (string | number)[] = [artistId];
+
+    if (search) {
+      params.push(`%${search}%`);
+    }
+
+    const [rows]: any = await pool.execute(query, params);
 
     return rows[0].count;
   }

@@ -32,7 +32,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
   const [selectedSong, setSelectedSong] = useState<any | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const songsQuery = useSongsByArtist(artistId, page, PAGE_SIZE);
+  const songsQuery = useSongsByArtist(artistId, page, PAGE_SIZE, search);
   const deleteSong = useDeleteSong();
   const songsData = songsQuery.data as SongsResponse | undefined;
 
@@ -84,7 +84,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
             <TableSkeleton col={TOTAL_COLUMNS} row={5} />
           )}
 
-          {!songsQuery.isLoading && songsData?.songs.length === 0 && (
+          {!songsQuery.isLoading && (songsData?.songs?.length ?? 0) === 0 && (
             <TableRow>
               <TableCell
                 colSpan={TOTAL_COLUMNS}

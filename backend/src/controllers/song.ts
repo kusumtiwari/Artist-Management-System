@@ -18,8 +18,9 @@ export class SongController {
       const artistId = parseInt(req.params.artistId as string);
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
+      const search = (req.query.search as string) || '';
 
-      const result = await SongService.getByArtistId(artistId, page, limit);
+      const result = await SongService.getByArtistId(artistId, page, limit, search);
       res.status(200).json({
         success: true,
         songs: result.songs,

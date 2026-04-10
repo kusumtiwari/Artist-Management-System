@@ -64,11 +64,11 @@ export function SongTable({ open, onOpenChange, artistId, artistName }: SongTabl
         <div className="p-6">
           {songsQuery.isLoading && <TableSkeleton col={6} row={5} />}
 
-          {!songsQuery.isLoading && songsData?.songs.length === 0 && (
+          {!songsQuery.isLoading && (songsData?.songs?.length ?? 0) === 0 && (
             <div className="text-sm text-default-secondary">No songs found for this artist.</div>
           )}
 
-          {!songsQuery.isLoading && songsData?.songs.length > 0 && (
+          {!songsQuery.isLoading && (songsData?.songs?.length ?? 0) > 0 && (
             <Table>
               <TableHeader>
                 <TableRow>

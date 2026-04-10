@@ -9,9 +9,9 @@ import {
   TableRow,
   TableSkeleton,
 } from "../ui/table";
-import { useArtists, useDeleteArtist } from "../../queries/resources";
+import { useArtists, useDeleteArtist, useExportArtistCSV } from "../../queries/resources";
 import { AddArtistDialog } from "./add-artist-dialog";
-import { SongTable } from "./song-table";
+import { ImportArtistDialog } from "./import-artist-dialog";
 import type { Artist, ArtistsResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
@@ -19,17 +19,30 @@ import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const PAGE_SIZE = 10;
 const TOTAL_COLUMNS = 9;
+
+function ExportButton() {
+  const exportArtists = useExportArtistCSV();
+  
+  return (
+    <Button 
+      intent="secondary"
+      onClick={() => exportArtists.mutate()}
+      isLoading={exportArtists.isPending}
+    >
+      Export CSV
+    </Button>
+  );
+}
 
 export function ArtistsTable() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedArtist, setSelectedArtist] = useState<Artist | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [songArtist, setSongArtist] = useState<Artist | null>(null);
-  const [isSongOpen, setIsSongOpen] = useState(false);
   const navigate = useNavigate();
 
   const artistsQuery = useArtists(page, PAGE_SIZE, search);
@@ -64,6 +77,8 @@ export function ArtistsTable() {
             className="text-14 sm:w-70 h-9"
             onChange={handleSearchChange}
           />
+          <ImportArtistDialog onSuccess={() => artistsQuery.refetch()} />
+          <ExportButton />
           <AddArtistDialog onArtistCreated={() => artistsQuery.refetch()} />
         </div>
       </div>

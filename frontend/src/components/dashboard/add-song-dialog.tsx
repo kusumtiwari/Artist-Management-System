@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '../ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from '../ui/dialog'
 import { FormContent, FormGroup } from '../ui/form'
 import { Input } from '../ui/Input'
 import { Label } from '../ui/label'
@@ -17,21 +17,27 @@ type SongFormValues = {
 }
 
 interface AddSongDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   artistId: number
   song?: Song | null
+  trigger?: React.ReactNode
 }
 
 export function AddSongDialog({
-  open,
-  onOpenChange,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
   artistId,
   song,
+  trigger,
 }: AddSongDialogProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
   const createSong = useCreateSong()
   const updateSong = useUpdateSong()
   const isLoading = createSong.isPending || updateSong.isPending
+
+  const isOpen = controlledOpen ?? internalOpen
+  const setIsOpen = controlledOnOpenChange ?? setInternalOpen
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<SongFormValues>({
     defaultValues: {
@@ -62,21 +68,28 @@ export function AddSongDialog({
         { id: song.id, data: payload },
         {
           onSuccess: () => {
-            onOpenChange(false)
+            setIsOpen(false)
           },
         }
       )
     } else {
       createSong.mutate(payload, {
         onSuccess: () => {
-          onOpenChange(false)
+          setIsOpen(false)
         },
       })
     }
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        {trigger ?? (
+          <Button intent="secondary">
+            {song ? 'Edit Song' : 'Add Song'}
+          </Button>
+        )}
+      </DialogTrigger>
       <DialogContent className="p-0 max-w-xl md:w-130">
         <DialogHeader>
           <DialogTitle>{song ? 'Edit Song' : 'Add Song'}</DialogTitle>

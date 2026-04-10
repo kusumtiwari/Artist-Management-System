@@ -121,3 +121,33 @@ export const useDeleteArtist = () => {
     },
   })
 }
+
+export const useExportArtistCSV = () => {
+  const { showToast } = useToast()
+
+  return useMutation({
+    mutationFn: () => resourcesService.exportArtistCSV(),
+    onSuccess: (blob) => {
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `artists-${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      
+      showToast('Artists exported successfully', 'success')
+    },
+    onError: (error) => {
+      showToast(error instanceof Error ? error.message : 'Export failed', 'error')
+    },
+  })
+}
+
+export const useImportArtistCSV = () => {
+  return useMutation({
+    mutationFn: (file: File) => resourcesService.importArtistCSV(file),
+  })
+}

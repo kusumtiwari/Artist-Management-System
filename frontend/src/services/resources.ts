@@ -52,5 +52,21 @@ export const resourcesService = {
   deleteArtist: async (artistId: number): Promise<{ success: boolean; message: string }> => {
     const res = await api.delete(`${ENDPOINTS.ARTISTS.LIST}/${artistId}`)
     return res.data
+  },
+
+  exportArtistCSV: async (): Promise<Blob> => {
+    const res = await api.get(ENDPOINTS.ARTISTS.EXPORT_CSV, {
+      responseType: 'blob',
+    })
+    return res.data
+  },
+
+  importArtistCSV: async (file: File): Promise<{ success: boolean; imported: number; errors: string[]; message: string }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await api.post(ENDPOINTS.ARTISTS.IMPORT_CSV, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    return res.data
   }
 }

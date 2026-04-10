@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Topbar from '../../components/layout/topbar'
+import { DashboardLayout } from '../../components/layout/dashboard-layout'
 import Tabs from '../../components/ui/tabs'
 import type { Tab } from '../../components/ui/tabs'
 import { useLogout, useMe } from '../../queries/auth'
@@ -43,33 +43,26 @@ export default function DashboardPage() {
   }
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ background: 'var(--bg-background)' }}
-    >
-      <Topbar username={username} onLogout={handleLogout} role={currentUser?.isAdmin ? 'admin' : 'user'} />
-
-      <main className="flex-1 px-6 py-6 max-w-7xl w-full mx-auto">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-semibold" style={{ color: 'var(--text-default)' }}>
-              Dashboard
-            </h1>
-            <p className="mt-2 text-sm text-default-secondary">
-              Manage users and artists from separate table views.
-            </p>
-          </div>
+    <DashboardLayout username={username} onLogout={handleLogout} role={currentUser?.isAdmin ? 'admin' : 'user'}>
+      <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-semibold" style={{ color: 'var(--text-default)' }}>
+            Dashboard
+          </h1>
+          <p className="mt-2 text-sm text-default-secondary">
+            Manage users and artists from separate table views.
+          </p>
         </div>
+      </div>
 
-        {/* tabs */}
-        <Tabs tabs={TABS} active={activeTab} onChange={(value) => setActiveTab(value as 'users' | 'artists')} />
+      {/* tabs */}
+      <Tabs tabs={TABS} active={activeTab} onChange={(value) => setActiveTab(value as 'users' | 'artists')} />
 
-        {/* table area */}
-        <div className="mt-6">
-          {activeTab === 'users' && <UsersTable />}
-          {activeTab === 'artists' && <ArtistsTable />}
-        </div>
-      </main>
-    </div>
+      {/* table area */}
+      <div className="mt-6">
+        {activeTab === 'users' && <UsersTable />}
+        {activeTab === 'artists' && <ArtistsTable />}
+      </div>
+    </DashboardLayout>
   )
 }

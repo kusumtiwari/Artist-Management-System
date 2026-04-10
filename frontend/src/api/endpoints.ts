@@ -12,5 +12,7 @@ export const ENDPOINTS = {
   ARTISTS: {
     LIST: '/api/artists',
     CREATE: '/api/artists',
+    EXPORT_CSV: '/api/artists/export/csv',
+    IMPORT_CSV: '/api/artists/import/csv',
   },
 }

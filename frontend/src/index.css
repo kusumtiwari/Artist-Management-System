@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import "tailwindcss";
 
-
 @theme {
-  --font-family-sans: 'Inter', sans-serif;
+  --font-family-sans: "Inter", sans-serif;
 
   /* colors */
   --color-background: var(--bg-background);
@@ -170,6 +169,116 @@
   --scrollbar-track: #e0e0e0;
   --scrollbar-thumb: #c1c1c1;
   --scrollbar-thumb-hover: #888888;
+}
+
+/* Theme ✦ - Dark Mode */
+html[data-theme="dark"] {
+  --bg-surface: #f2c4fe0e;
+  --bg-surface-hover: #eecefe15;
+  --bg-surface-active: #f2d8ff1c;
+  --bg-surface-disabled: #2500490e;
+  --bg-surface-primary: rgba(255, 112, 50, 0.07);
+  --bg-surface-primary-hover: rgba(255, 112, 50, 0.15);
+  --bg-surface-primary-active: rgba(255, 112, 50, 0.19);
+  --bg-surface-info: #2970ff0f;
+  --bg-surface-info-hover: #2970ff19;
+  --bg-surface-info-active: #023eeb26;
+  --bg-surface-success: #17b26a16;
+  --bg-surface-success-hover: #17b26a22;
+  --bg-surface-success-active: #17b26a33;
+  --bg-surface-warning: #f790092a;
+  --bg-surface-warning-hover: #f7900944;
+  --bg-surface-warning-active: #f790095b;
+  --bg-surface-error: #d93d4210;
+  --bg-surface-error-hover: #d93d421a;
+  --bg-surface-error-active: #d93d4227;
+
+  --bg-fill: #6f6d78ff;
+  --bg-fill-hover: #82808bff;
+  --bg-fill-active: #b1afb8ff;
+  --bg-fill-disabled: #f2c4fe16;
+  --bg-fill-primary: #16a34a; /* was #ff692e */
+  --bg-fill-primary-hover: #15803d; /* was #ff874c */
+  --bg-fill-primary-active: #166534;
+  --bg-fill-secondary: #05a2c2ff;
+  --bg-fill-secondary-hover: #13b7d8ff;
+  --bg-fill-secondary-active: #20d0f3ff;
+  --bg-fill-info: #0091ffff;
+  --bg-fill-info-hover: #3cabffff;
+  --bg-fill-info-active: #6bc1ffff;
+  --bg-fill-success: #30a46cff;
+  --bg-fill-success-hover: #35b979ff;
+  --bg-fill-success-active: #3dd68cff;
+  --bg-fill-warning: #fdb022ff;
+  --bg-fill-warning-hover: #ffc436ff;
+  --bg-fill-warning-active: #ffd84aff;
+  --bg-fill-error: #f97066ff;
+  --bg-fill-error-hover: #ff847aff;
+  --bg-fill-error-active: #ff988eff;
+  --bg-fill-inverse: #0a0a0a;
+
+  --bg-background: #181818ff;
+  --bg-secondary: #0a0a0aff;
+  --bg-teritary: #242424ff;
+
+  --text-default: #f1f3f4;
+  --text-default-secondary: #b1afb8ff;
+  --text-default-tertiary: #93919aff;
+  --text-disabled: #f2c4fe16;
+  --text-primary: #4ade80; /* lighter green for dark bg readability */
+  --text-primary-hover: #22c55e;
+  --text-secondary: #06aed4ff;
+  --text-secondary-hover: #13b7d8ff;
+  --text-primary-on-bg-fill: #ffffffff;
+  --text-info: #528bffff;
+  --text-info-hover: #3cabffff;
+  --text-info-active: #6bc1ffff;
+  --text-success: #47cd89ff;
+  --text-success-hover: #17b26aff;
+  --text-success-active: #3dd68cff;
+  --text-warning: #fdb022ff;
+  --text-warning-hover: #f79009ff;
+  --text-warning-active: #ffd84aff;
+  --text-error: #f97066ff;
+  --text-error-hover: #ff847aff;
+  --text-error-active: #ff988eff;
+  --text-inverse: #f1f3f4;
+
+  --icon-icon: #b1afb8ff;
+  --icon-hover: #c5c3ccff;
+  --icon-active: #93919aff;
+  --icon-disabled: #f2c4fe16;
+  --icon-primary: #ff692e;
+  --icon-primary-on-bg-fill: #ffffffff;
+  --icon-info: #528bffff;
+  --icon-success: #17b26aff;
+  --icon-warning: #f79009ff;
+  --icon-error: #f04438ff;
+  --icon-inverse: #ffffffff;
+
+  --border-border: #f2d8ff1c;
+  --border-soft: #f2c4fe16;
+  --border-hover: #efdbff32;
+  --border-disabled: #ff65ff07;
+  --border-Solid: #a4a7aeff;
+  --border-primary: rgba(22, 163, 74, 0.35);
+  --border-primary-solid: #16a34a;
+  --border-secondary: #06aed45e;
+  --border-secondary-solid: #06aed4ff;
+  --border-info: #528bff5e;
+  --border-success: #47cd895e;
+  --border-warning: #fdb0225e;
+  --border-error: #f970665e;
+  --border-error-solid: #f04438ff;
+
+  --outline-focus: #0082e6a1;
+  --outline-focus-soft: #edf6ffff;
+
+  --overlay-overlay: #161619cc;
+
+  --scrollbar-track: #1e1e1e;
+  --scrollbar-thumb: #3a3a3a;
+  --scrollbar-thumb-hover: #555;
 }
 * {
   font-family: var(--font-sans);

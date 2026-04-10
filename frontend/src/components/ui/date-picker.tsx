@@ -51,7 +51,7 @@ export function DatePicker({
             intent="outline"
             size={2}
             className={cn(
-              "w-full justify-start text-left font-normal",
+              "w-full justify-start text-left font-normal hover:bg-transparent ",
               !value && "text-text-default-tertiary",
               error && "border-border-error-solid",
               disabled && "cursor-not-allowed opacity-50",

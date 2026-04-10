@@ -49,7 +49,7 @@ export default function DashboardPage() {
           <h1 className="text-xl font-semibold" style={{ color: 'var(--text-default)' }}>
             Dashboard
           </h1>
-          <p className="mt-2 text-sm text-default-secondary">
+          <p className="mt-2 text-sm text-text-default-secondary">
             Manage users and artists from separate table views.
           </p>
         </div>

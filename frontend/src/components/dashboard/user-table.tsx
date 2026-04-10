@@ -47,7 +47,7 @@ export function UsersTable() {
   return (
     <div>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
-        <p className="text-sm text-default-secondary">
+        <p className="text-sm text-text-default-secondary">
           Manage your registered users and access details.
         </p>
         <div className="flex items-center gap-2">
@@ -55,8 +55,8 @@ export function UsersTable() {
             type="text"
             prefixIcon={SearchIcon}
             placeholder="Search users..."
-            prefixIconClassname="text-default-tertiary"
-            className="text-14 sm:w-70 h-9"
+            prefixIconClassname="text-text-default-secondary"
+            className="text-14 sm:w-70 h-9 text-text-default"
             onChange={handleSearchChange}
           />
           <AddUserDialog onUserCreated={() => usersQuery.refetch()} />

@@ -156,7 +156,7 @@ export function AddUserDialog({
             </div>
 
             <div className="border-t pt-4 mt-2 border-text-default-secondary">
-              <p className="text-sm font-medium text-default-secondary mb-4">
+              <p className="text-sm font-medium text-text-default-secondary mb-4">
                 Additional Information (Optional)
               </p>
 

@@ -48,7 +48,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const inputStyles = cn(
-      'flex-1 border-0 outline-none w-full placeholder:text-default-tertiary placeholder:font-normal font-medium text-sm bg-transparent',
+      'flex-1 border-0 outline-none text-text-default w-full placeholder:text-default-tertiary placeholder:font-normal font-medium text-sm bg-transparent',
       inputClassName,
       disabled && 'cursor-not-allowed',
       intent === 'ghost' && 'bg-transparent border-0'

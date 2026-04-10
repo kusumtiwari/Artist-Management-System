@@ -1,17 +1,22 @@
 import { UserIcon } from "../../assets";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ThemeToggle } from "../ui/theme-toggle";
 
 interface TopbarProps {
   username?: string;
   onLogout: () => void;
-  role?:string;
+  role?: string;
 }
 
-export default function Topbar({ username = "Admin", onLogout, role }: TopbarProps) {
+export default function Topbar({
+  username = "Admin",
+  onLogout,
+  role,
+}: TopbarProps) {
   return (
     <header
-      className="w-full h-14 px-10 xl:px-16 flex items-center justify-between border-b"
+      className="w-full bg-background h-14 px-10 xl:px-16 flex items-center justify-between border-b"
       style={{
         background: "var(--bg-background)",
         borderColor: "var(--border-border)",
@@ -33,19 +38,17 @@ export default function Topbar({ username = "Admin", onLogout, role }: TopbarPro
 
       {/* right */}
       <div className="flex items-center gap-10">
+        <ThemeToggle />
         <p
           className="text-sm"
           style={{ color: "var(--text-default-secondary)" }}
         >
-          Welcome,{" "}
-          <span style={{ color: "var(--text-default)", fontWeight: 500 }}>
-            {username}
-          </span>
+          Welcome, <span className="text-text-default">{username}</span>
         </p>
         <Popover>
           <PopoverTrigger asChild>
             <button>
-              <UserIcon className="h-5 w-5 cursor-pointer" />
+              <UserIcon className="h-5 w-5 cursor-pointer text-text-default" />
             </button>
           </PopoverTrigger>
 
@@ -63,7 +66,7 @@ export default function Topbar({ username = "Admin", onLogout, role }: TopbarPro
                 className="text-sm font-medium"
                 style={{ color: "var(--text-default)" }}
               >
-                {username}, {role === 'admin' ? 'Admin' : 'User'}
+                {username}, {role === "admin" ? "Admin" : "User"}
               </p>
 
               {/* Divider */}

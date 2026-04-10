@@ -24,7 +24,7 @@ export default function Tabs({ tabs, active, onChange }: TabsProps) {
             key={tab.value}
             onClick={() => onChange(tab.value)}
             className={cn(
-              'px-4 py-2.5 text-sm font-medium transition-all outline-none relative',
+              'px-4 py-2.5 text-sm cursor-pointer font-medium transition-all outline-none relative',
               'hover:text-text-default',
             )}
             style={{

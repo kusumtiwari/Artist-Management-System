@@ -90,7 +90,7 @@ export function AddSongDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="p-0 max-w-xl md:w-130">
+      <DialogContent className="!p-0 max-w-xl md:w-130">
         <DialogHeader>
           <DialogTitle>{song ? 'Edit Song' : 'Add Song'}</DialogTitle>
         </DialogHeader>

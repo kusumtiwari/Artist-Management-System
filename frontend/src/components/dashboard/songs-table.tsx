@@ -52,7 +52,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
   return (
     <div>
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
-        <p className="text-sm text-default-secondary">
+        <p className="text-sm text-text-default-secondary">
           Manage songs for {artistName}.
         </p>
         <div className="flex items-center gap-2">
@@ -60,14 +60,14 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
             type="text"
             prefixIcon={SearchIcon}
             placeholder="Search songs..."
-            prefixIconClassname="text-default-tertiary"
+            prefixIconClassname="text-text-default-secondary"
             className="text-14 sm:w-70 h-9"
             onChange={handleSearchChange}
           />
           <AddSongDialog artistId={artistId} />
         </div>
       </div>
-
+ 
       <Table>
         <TableHeader>
           <TableRow>

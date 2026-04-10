@@ -18,7 +18,10 @@ const Table = React.forwardRef<
     )}
   >
     <table
-      className={cn("min-w-max w-full caption-bottom text-sm scrollbar-thin", className)}
+      className={cn(
+        "min-w-max w-full caption-bottom text-sm scrollbar-thin",
+        className,
+      )}
       {...props}
     />
   </div>
@@ -31,7 +34,8 @@ const TableHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <thead
     ref={ref}
-    className={cn("sticky top-0 z-[1] bg-gray-100 [&_tr]:border-b", className)}
+    className={cn("sticky top-0 z-[1]  text-text-default", className)}
+    style={{ background: "var(--bg-secondary)" }}
     {...props}
   />
 ));
@@ -43,7 +47,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
-    className={cn("[&_tr:last-child]:border-0 [&_tr]:bg-background", className)}
+    className={cn("[&_tr:last-child]:border-0 [&_tr]:bg-background text-text-default-secondary", className)}
     {...props}
   />
 ));

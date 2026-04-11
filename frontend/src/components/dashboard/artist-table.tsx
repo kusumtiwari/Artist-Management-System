@@ -77,9 +77,9 @@ export function ArtistsTable() {
             className="text-14 sm:w-70 h-9 text-text-default-secondary"
             onChange={handleSearchChange}
           />
-          <ImportArtistDialog onSuccess={() => artistsQuery.refetch()} />
+          <ImportArtistDialog />
           <ExportButton />
-          <AddArtistDialog onArtistCreated={() => artistsQuery.refetch()} />
+          <AddArtistDialog />
         </div>
       </div>
 
@@ -158,7 +158,6 @@ export function ArtistsTable() {
                         no_of_albums_released: artist.no_of_albums_released || undefined,
                         id: artist.id,
                       }}
-                      onArtistCreated={() => artistsQuery.refetch()}
                       trigger={
                         <button className="text-black hover:text-primary transition-colors">
                           <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />

@@ -1,5 +1,6 @@
 import pool from '../config/db';
 import { Artist, CreateArtistData } from '../types';
+import toMySQLDate from '../utils/date';
 
 export class ArtistModel {
   static async create(artistData: CreateArtistData): Promise<Artist> {
@@ -7,7 +8,7 @@ export class ArtistModel {
       'INSERT INTO artists (name, dob, gender, address, first_release_year, no_of_albums_released, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())',
       [
         artistData.name,
-        artistData.dob || null,
+         artistData.dob ? toMySQLDate(artistData.dob) : null,
         artistData.gender,
         artistData.address || null,
         artistData.first_release_year || null,

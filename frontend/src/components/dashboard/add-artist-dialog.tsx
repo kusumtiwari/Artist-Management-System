@@ -34,7 +34,6 @@ import { createArtistSchema, type CreateArtistFormValues } from "../../schema/ar
 interface AddArtistDialogProps {
   mode?: "add" | "edit";
   initialValues?: CreateArtistFormValues & { id?: number };
-  onArtistCreated?: () => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
@@ -43,7 +42,6 @@ interface AddArtistDialogProps {
 export function AddArtistDialog({
   mode = "add",
   initialValues,
-  onArtistCreated,
   isOpen: controlledOpen,
   onOpenChange: controlledOnOpenChange,
   trigger,
@@ -96,7 +94,6 @@ export function AddArtistDialog({
           onSuccess: () => {
             setIsOpen(false);
             reset();
-            onArtistCreated?.();
           },
         }
       );
@@ -107,7 +104,6 @@ export function AddArtistDialog({
       onSuccess: () => {
         setIsOpen(false);
         reset();
-        onArtistCreated?.();
       },
     });
   };

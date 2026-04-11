@@ -45,8 +45,8 @@ export default function Pagination({
       renderOnZeroPageCount={null}
       pageClassName="md:block text-md"
       breakLinkClassName="md:block"
-      pageLinkClassName="w-[35px] bg-gray-100 aspect-square rounded-md mx-0.5 inline-flex items-center justify-center hover:bg-surface"
-      activeLinkClassName="bg-gray-100 border-2 border-fill-primary text-14 hover:bg-surface-active"
+      pageLinkClassName="cursor-pointer w-[35px] bg-gray-100 aspect-square rounded-md mx-0.5 inline-flex items-center justify-center hover:bg-surface"
+      activeLinkClassName="cursor-pointer bg-gray-100 border-2 border-fill-primary text-14 hover:bg-surface-active"
       containerClassName="flex items-center text-default justify-center md:justify-normal gap-x-1"
       disabledClassName="[&>a>button]:text-default-tertiary"
       previousClassName="mr-4"

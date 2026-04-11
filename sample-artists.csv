@@ -1,6 +1,31 @@
-Name,Date of Birth,Gender,Address,First Release Year,Albums Released
-John Smith,1985-03-15,male,123 Main St,2010,5
-Sarah Johnson,1990-07-22,female,456 Oak Ave,2015,3
-Michael Brown,1992-11-08,male,789 Pine Rd,2018,2
-Emily Davis,,female,321 Elm St,2020,1
-"David ""Dave"" Wilson",1988-05-17,male,"555 Maple, Suite 100",2012,4
+name,dob,gender,address,first_release_year,no_of_albums_released
+Aarav Sharma,1995-06-15,male,Kathmandu,2015,3
+Sita Rai,1998-03-22,female,Pokhara,2018,2
+Rohan Gurung,1992-11-10,male,Lalitpur,2012,5
+Maya Thapa,1996-08-05,female,Bhaktapur,2017,4
+Kiran Adhikari,1990-01-30,male,Chitwan,2010,6
+Anjali Shrestha,1999-09-14,female,Kathmandu,2019,2
+Bikash Karki,1993-04-18,male,Dharan,2014,3
+Pooja Lama,1997-12-01,female,Butwal,2016,4
+Suman KC,1991-07-21,male,Nepalgunj,2011,5
+Nisha Bhandari,2000-02-11,female,Hetauda,2020,1
+Rajesh Khadka,1989-05-09,male,Kathmandu,2009,7
+Sunita Magar,1994-10-28,female,Pokhara,2015,3
+Dipesh Oli,1996-06-12,male,Biratnagar,2017,2
+Rita Poudel,1992-03-03,female,Lalitpur,2013,4
+Manoj Joshi,1988-11-17,male,Chitwan,2008,8
+Kabita Basnet,1995-01-25,female,Bhaktapur,2016,3
+Arjun Dahal,1997-09-09,male,Kathmandu,2018,2
+Sarita Rana,1993-12-30,female,Pokhara,2014,5
+Prakash Khatri,1991-08-14,male,Dang,2012,6
+Laxmi Shahi,1998-04-07,female,Surkhet,2019,2
+Deepak Neupane,1990-10-19,male,Kathmandu,2011,5
+Sushma Pandey,1996-07-02,female,Birgunj,2017,3
+Ramesh Chaudhary,1987-02-26,male,Janakpur,2007,9
+Gita Tamang,1999-11-13,female,Kathmandu,2020,1
+Ashok Thapa,1994-05-06,male,Pokhara,2015,4
+Bina Rai,1997-08-23,female,Dharan,2018,2
+Hari Karki,1992-06-29,male,Lalitpur,2013,5
+Meena Gurung,1995-03-15,female,Butwal,2016,3
+Suraj Shrestha,1991-12-08,male,Kathmandu,2012,6
+Rekha Adhikari,1998-09-27,female,Bhaktapur,2019,2

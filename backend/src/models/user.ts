@@ -1,6 +1,7 @@
 // models/userModel.ts
-import pool from '../config/db';
-import { User, CreateUserData } from '../types';
+import pool from "../config/db";
+import { User, CreateUserData } from "../types";
+import toMySQLDate from "../utils/date";
 
 export class UserModel {
   private static mapUserRow(row: any): User {
@@ -10,47 +11,55 @@ export class UserModel {
     } as User;
   }
 
-  static async create(userData: CreateUserData, hashedPassword: string): Promise<User> {
-    const fields = ['first_name', 'last_name', 'email', 'password'];
-    const values: any[] = [userData.first_name, userData.last_name, userData.email, hashedPassword];
-    const placeholders = ['?', '?', '?', '?'];
+  static async create(
+    userData: CreateUserData,
+    hashedPassword: string,
+  ): Promise<User> {
+    const fields = ["first_name", "last_name", "email", "password"];
+    const values: any[] = [
+      userData.first_name,
+      userData.last_name,
+      userData.email,
+      hashedPassword,
+    ];
+    const placeholders = ["?", "?", "?", "?"];
 
     if (userData.phone !== undefined) {
-      fields.push('phone');
+      fields.push("phone");
       values.push(userData.phone);
-      placeholders.push('?');
+      placeholders.push("?");
     }
     if (userData.dob !== undefined) {
-      fields.push('dob');
-      values.push(userData.dob);
-      placeholders.push('?');
+      fields.push("dob");
+      values.push(toMySQLDate(userData.dob));
+      placeholders.push("?");
     }
     if (userData.gender !== undefined) {
-      fields.push('gender');
+      fields.push("gender");
       values.push(userData.gender);
-      placeholders.push('?');
+      placeholders.push("?");
     }
     if (userData.address !== undefined) {
-      fields.push('address');
+      fields.push("address");
       values.push(userData.address);
-      placeholders.push('?');
+      placeholders.push("?");
     }
     if (userData.isAdmin !== undefined) {
-      fields.push('is_admin');
+      fields.push("is_admin");
       values.push(userData.isAdmin ? 1 : 0);
-      placeholders.push('?');
+      placeholders.push("?");
     }
 
-    fields.push('created_at', 'updated_at');
-    placeholders.push('NOW()', 'NOW()');
+    fields.push("created_at", "updated_at");
+    placeholders.push("NOW()", "NOW()");
 
-    const insertQuery = `INSERT INTO users (${fields.join(', ')}) VALUES (${placeholders.join(', ')})`;
+    const insertQuery = `INSERT INTO users (${fields.join(", ")}) VALUES (${placeholders.join(", ")})`;
 
     const [result]: any = await pool.execute(insertQuery, values);
 
     const [rows] = await pool.execute(
-      'SELECT id, first_name, last_name, email, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE id = ?',
-      [result.insertId]
+      "SELECT id, first_name, last_name, email, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE id = ?",
+      [result.insertId],
     );
 
     return this.mapUserRow((rows as any[])[0]);
@@ -58,8 +67,8 @@ export class UserModel {
 
   static async findByEmail(email: string): Promise<User | null> {
     const [rows] = await pool.execute(
-      'SELECT id, first_name, last_name, email, password, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE email = ?',
-      [email]
+      "SELECT id, first_name, last_name, email, password, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE email = ?",
+      [email],
     );
     const users = rows as any[];
     return users.length ? this.mapUserRow(users[0]) : null;
@@ -67,19 +76,23 @@ export class UserModel {
 
   static async findById(id: number): Promise<User | null> {
     const [rows] = await pool.execute(
-      'SELECT id, first_name, last_name, email, password, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE id = ?',
-      [id]
+      "SELECT id, first_name, last_name, email, password, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE id = ?",
+      [id],
     );
     const users = rows as any[];
     return users.length ? this.mapUserRow(users[0]) : null;
   }
 
-  static async findAll(limit: number = 10, offset: number = 0, search?: string): Promise<User[]> {
+  static async findAll(
+    limit: number = 10,
+    offset: number = 0,
+    search?: string,
+  ): Promise<User[]> {
     const safeLimit = Number.isInteger(limit) && limit > 0 ? limit : 10;
     const safeOffset = Number.isInteger(offset) && offset >= 0 ? offset : 0;
 
     let query = `SELECT id, first_name, last_name, email, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users`;
-    let whereClause = '';
+    let whereClause = "";
     const params: any[] = [];
 
     if (search && search.trim()) {
@@ -96,7 +109,7 @@ export class UserModel {
   }
 
   static async count(search?: string): Promise<number> {
-    let query = 'SELECT COUNT(*) as count FROM users';
+    let query = "SELECT COUNT(*) as count FROM users";
     const params: any[] = [];
 
     if (search && search.trim()) {
@@ -110,44 +123,48 @@ export class UserModel {
     return rows[0].count;
   }
 
-  static async update(id: number, userData: Partial<CreateUserData>, hashedPassword?: string): Promise<User | null> {
+  static async update(
+    id: number,
+    userData: Partial<CreateUserData>,
+    hashedPassword?: string,
+  ): Promise<User | null> {
     const updateFields: string[] = [];
     const values: any[] = [];
 
     if (userData.first_name !== undefined) {
-      updateFields.push('first_name = ?');
+      updateFields.push("first_name = ?");
       values.push(userData.first_name);
     }
     if (userData.last_name !== undefined) {
-      updateFields.push('last_name = ?');
+      updateFields.push("last_name = ?");
       values.push(userData.last_name);
     }
     if (userData.email !== undefined) {
-      updateFields.push('email = ?');
+      updateFields.push("email = ?");
       values.push(userData.email);
     }
     if (hashedPassword) {
-      updateFields.push('password = ?');
+      updateFields.push("password = ?");
       values.push(hashedPassword);
     }
     if (userData.phone !== undefined) {
-      updateFields.push('phone = ?');
+      updateFields.push("phone = ?");
       values.push(userData.phone);
     }
     if (userData.dob !== undefined) {
-      updateFields.push('dob = ?');
+      updateFields.push("dob = ?");
       values.push(userData.dob);
     }
     if (userData.gender !== undefined) {
-      updateFields.push('gender = ?');
+      updateFields.push("gender = ?");
       values.push(userData.gender);
     }
     if (userData.address !== undefined) {
-      updateFields.push('address = ?');
+      updateFields.push("address = ?");
       values.push(userData.address);
     }
     if (userData.isAdmin !== undefined) {
-      updateFields.push('is_admin = ?');
+      updateFields.push("is_admin = ?");
       values.push(userData.isAdmin ? 1 : 0);
     }
 
@@ -155,29 +172,32 @@ export class UserModel {
       return null;
     }
 
-    updateFields.push('updated_at = NOW()');
+    updateFields.push("updated_at = NOW()");
     values.push(id);
 
     await pool.execute(
-      `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`,
-      values
+      `UPDATE users SET ${updateFields.join(", ")} WHERE id = ?`,
+      values,
     );
 
     return this.findById(id);
   }
 
   static async delete(id: number): Promise<boolean> {
-    const [result]: any = await pool.execute(
-      'DELETE FROM users WHERE id = ?',
-      [id]
-    );
+    const [result]: any = await pool.execute("DELETE FROM users WHERE id = ?", [
+      id,
+    ]);
     return result.affectedRows > 0;
   }
 
-  static async exists(email: string, first_name: string, last_name: string): Promise<boolean> {
+  static async exists(
+    email: string,
+    first_name: string,
+    last_name: string,
+  ): Promise<boolean> {
     const [rows] = await pool.execute(
-      'SELECT id FROM users WHERE email = ? OR (first_name = ? AND last_name = ?) LIMIT 1',
-      [email, first_name, last_name]
+      "SELECT id FROM users WHERE email = ? OR (first_name = ? AND last_name = ?) LIMIT 1",
+      [email, first_name, last_name],
     );
 
     return (rows as any[]).length > 0;

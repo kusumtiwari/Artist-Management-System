@@ -37,7 +37,6 @@ type CreateUserFormValues = z.infer<typeof createUserSchema>;
 interface AddUserDialogProps {
   mode?: "add" | "edit";
   initialValues?: Partial<CreateUserFormValues> & { id?: number };
-  onUserCreated?: () => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
@@ -46,7 +45,6 @@ interface AddUserDialogProps {
 export function AddUserDialog({
   mode = "add",
   initialValues,
-  onUserCreated,
   isOpen: controlledOpen,
   onOpenChange: controlledOnOpenChange,
   trigger,
@@ -93,7 +91,6 @@ export function AddUserDialog({
           onSuccess: () => {
             setIsOpen(false);
             reset();
-            onUserCreated?.();
           },
         }
       );
@@ -104,7 +101,6 @@ export function AddUserDialog({
       onSuccess: () => {
         setIsOpen(false);
         reset();
-        onUserCreated?.();
       },
     });
   };

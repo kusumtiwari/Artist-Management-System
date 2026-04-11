@@ -59,7 +59,7 @@ export function UsersTable() {
             className="text-14 sm:w-70 h-9 text-text-default"
             onChange={handleSearchChange}
           />
-          <AddUserDialog onUserCreated={() => usersQuery.refetch()} />
+          <AddUserDialog />
         </div>
       </div>
 
@@ -130,7 +130,6 @@ export function UsersTable() {
                           dob: user.dob ? new Date(user.dob) : null,
                           id: user.id,
                         }}
-                        onUserCreated={() => usersQuery.refetch()}
                         trigger={
                           <button className="text-black hover:text-primary transition-colors">
                             <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />

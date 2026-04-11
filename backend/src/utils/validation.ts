@@ -160,7 +160,7 @@ export class Validators {
       errors.push(`${fieldName} must be at least 2 characters long`);
     } else if (name.trim().length > 50) {
       errors.push(`${fieldName} must not exceed 50 characters`);
-    } else if (!/^[a-zA-Z\s\-']+$/.test(name.trim())) {
+    } else if (!/^[a-zA-Z0-9\s\-']+$/.test(name.trim())) {
       errors.push(`${fieldName} can only contain letters, spaces, hyphens, and apostrophes`);
     }
 

@@ -12,14 +12,14 @@ function FieldErrorMessage({
   if (relative) {
     return (
       <div className="relative h-0 w-auto">
-        <p className={`text-error text-14 mt-1 absolute left-0 top-0 flex items-center gap-1 ${className}`}>
+        <p className={`text-red-500 text-sm mt-1 absolute left-0 top-0 flex items-center gap-1 ${className}`}>
            {message}
         </p>
       </div>
     );
   }
   return (
-    <p className={`text-error text-14 mt-1 flex items-center gap-1 ${className}`}>
+    <p className={`text-red-500 text-sm mt-1 flex items-center gap-1 ${className}`}>
       {message}
     </p>
   );

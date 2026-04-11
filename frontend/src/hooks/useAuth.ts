@@ -1,23 +1,10 @@
-import { useEffect, useState } from 'react'
-import { api } from '../api/axios'
-import { ENDPOINTS } from '../api/endpoints'
+import { useMe } from '../queries/auth'
 
 export function useAuth() {
-  const [isChecking, setIsChecking] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const { data, isLoading } = useMe()
 
-  useEffect(() => {
-    api.get(ENDPOINTS.AUTH.ME)
-      .then(() => {
-        setIsAuthenticated(true)
-      })
-      .catch(() => {
-        setIsAuthenticated(false)
-      })
-      .finally(() => {
-        setIsChecking(false)
-      })
-  }, [])
-
-  return { isChecking, isAuthenticated }
-}   
+  return {
+    isChecking: isLoading,
+    isAuthenticated: !!data,
+  }
+}

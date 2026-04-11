@@ -1,3 +1,4 @@
+// creates connection pool tp mysql database 
 import dotenv from 'dotenv'
 dotenv.config()   
 
@@ -11,6 +12,8 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
 })
+
+// connect to mysql db & test connection 
 export const testConnection = async () => {
   try {
     const conn = await pool.getConnection()

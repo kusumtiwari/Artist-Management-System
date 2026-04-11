@@ -1,28 +1,59 @@
 import { ArtistModel } from '../models/artist';
 import { CreateArtistData, Artist } from '../types';
 import { CSVParser, CSVValidator } from '../utils/csv';
+import { Validators, ValidationError } from '../utils/validation';
 
 export class ArtistService {
   static async create(artistData: CreateArtistData): Promise<Artist> {
     // Validate required fields
-    if (!artistData.name || !artistData.gender) {
-      throw new Error('Name and gender are required');
+    if (!artistData.name) {
+      throw new ValidationError('name', 'Artist name is required');
+    }
+    if (!artistData.gender) {
+      throw new ValidationError('gender', 'Gender is required');
     }
 
-    // Validate gender enum
-    const validGenders = ['male', 'female', 'other'];
-    if (!validGenders.includes(artistData.gender)) {
-      throw new Error('Invalid gender value');
+    // Validate name
+    const nameValidation = Validators.validateName(artistData.name, 'Artist name');
+    if (!nameValidation.valid) {
+      throw new ValidationError('name', nameValidation.errors[0]);
     }
 
-    // Validate first_release_year if provided
-    if (artistData.first_release_year && (artistData.first_release_year < 1900 || artistData.first_release_year > new Date().getFullYear())) {
-      throw new Error('Invalid first release year');
+    // Validate gender
+    if (!Validators.gender(artistData.gender)) {
+      throw new ValidationError('gender', 'Gender must be male, female, or other');
     }
 
-    // Validate no_of_albums_released if provided
-    if (artistData.no_of_albums_released && artistData.no_of_albums_released < 0) {
-      throw new Error('Number of albums released cannot be negative');
+    // Validate date of birth if provided
+    if (artistData.dob) {
+      const dobValidation = Validators.dateOfBirth(artistData.dob);
+      if (!dobValidation.valid) {
+        throw new ValidationError('dob', dobValidation.errors[0]);
+      }
+    }
+
+    // Validate address if provided
+    if (artistData.address) {
+      const addressValidation = Validators.address(artistData.address);
+      if (!addressValidation.valid) {
+        throw new ValidationError('address', addressValidation.errors[0]);
+      }
+    }
+
+    // Validate first release year if provided
+    if (artistData.first_release_year !== undefined) {
+      const yearValidation = Validators.firstReleaseYear(artistData.first_release_year);
+      if (!yearValidation.valid) {
+        throw new ValidationError('first_release_year', yearValidation.errors[0]);
+      }
+    }
+
+    // Validate number of albums released if provided
+    if (artistData.no_of_albums_released !== undefined) {
+      const albumsValidation = Validators.albumsReleased(artistData.no_of_albums_released);
+      if (!albumsValidation.valid) {
+        throw new ValidationError('no_of_albums_released', albumsValidation.errors[0]);
+      }
     }
 
     return ArtistModel.create(artistData);
@@ -53,25 +84,52 @@ export class ArtistService {
     // Validate if artist exists
     const existingArtist = await ArtistModel.findById(id);
     if (!existingArtist) {
-      throw new Error('Artist not found');
+      throw new ValidationError('id', 'Artist not found');
     }
 
-    // Validate gender if provided
-    if (artistData.gender) {
-      const validGenders = ['male', 'female', 'other'];
-      if (!validGenders.includes(artistData.gender)) {
-        throw new Error('Invalid gender value');
+    // Validate name if provided
+    if (artistData.name) {
+      const nameValidation = Validators.validateName(artistData.name, 'Artist name');
+      if (!nameValidation.valid) {
+        throw new ValidationError('name', nameValidation.errors[0]);
       }
     }
 
-    // Validate first_release_year if provided
-    if (artistData.first_release_year && (artistData.first_release_year < 1900 || artistData.first_release_year > new Date().getFullYear())) {
-      throw new Error('Invalid first release year');
+    // Validate gender if provided
+    if (artistData.gender && !Validators.gender(artistData.gender)) {
+      throw new ValidationError('gender', 'Gender must be male, female, or other');
     }
 
-    // Validate no_of_albums_released if provided
-    if (artistData.no_of_albums_released && artistData.no_of_albums_released < 0) {
-      throw new Error('Number of albums released cannot be negative');
+    // Validate date of birth if provided
+    if (artistData.dob) {
+      const dobValidation = Validators.dateOfBirth(artistData.dob);
+      if (!dobValidation.valid) {
+        throw new ValidationError('dob', dobValidation.errors[0]);
+      }
+    }
+
+    // Validate address if provided
+    if (artistData.address) {
+      const addressValidation = Validators.address(artistData.address);
+      if (!addressValidation.valid) {
+        throw new ValidationError('address', addressValidation.errors[0]);
+      }
+    }
+
+    // Validate first release year if provided
+    if (artistData.first_release_year !== undefined) {
+      const yearValidation = Validators.firstReleaseYear(artistData.first_release_year);
+      if (!yearValidation.valid) {
+        throw new ValidationError('first_release_year', yearValidation.errors[0]);
+      }
+    }
+
+    // Validate number of albums released if provided
+    if (artistData.no_of_albums_released !== undefined) {
+      const albumsValidation = Validators.albumsReleased(artistData.no_of_albums_released);
+      if (!albumsValidation.valid) {
+        throw new ValidationError('no_of_albums_released', albumsValidation.errors[0]);
+      }
     }
 
     return ArtistModel.update(id, artistData);
@@ -81,7 +139,7 @@ export class ArtistService {
     // Check if artist exists
     const artist = await ArtistModel.findById(id);
     if (!artist) {
-      throw new Error('Artist not found');
+      throw new ValidationError('id', 'Artist not found');
     }
 
     return ArtistModel.delete(id);

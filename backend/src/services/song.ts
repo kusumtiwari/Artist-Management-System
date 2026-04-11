@@ -1,24 +1,44 @@
 import { SongModel } from '../models/song';
 import { CreateSongData, Song, SongWithArtist } from '../types';
+import { Validators, ValidationError } from '../utils/validation';
 
 export class SongService {
   static async create(songData: CreateSongData): Promise<Song> {
     // Validate required fields
-    if (!songData.title || !songData.genre || !songData.artist_id) {
-      throw new Error('Title, genre, and artist_id are required');
+    if (!songData.title) {
+      throw new ValidationError('title', 'Song title is required');
+    }
+    if (!songData.genre) {
+      throw new ValidationError('genre', 'Genre is required');
+    }
+    if (!songData.artist_id) {
+      throw new ValidationError('artist_id', 'Artist ID is required');
     }
 
-    // Validate genre enum
-    const validGenres = ['rnb', 'country', 'classic', 'rock', 'jazz'];
-    if (!validGenres.includes(songData.genre)) {
-      throw new Error('Invalid genre value');
+    // Validate title
+    const titleValidation = Validators.songTitle(songData.title);
+    if (!titleValidation.valid) {
+      throw new ValidationError('title', titleValidation.errors[0]);
+    }
+
+    // Validate genre
+    if (!Validators.genre(songData.genre)) {
+      throw new ValidationError('genre', 'Genre must be one of: rnb, country, classic, rock, jazz');
+    }
+
+    // Validate album name if provided
+    if (songData.album_name) {
+      const albumValidation = Validators.albumName(songData.album_name);
+      if (!albumValidation.valid) {
+        throw new ValidationError('album_name', albumValidation.errors[0]);
+      }
     }
 
     // Check if artist exists
     const { ArtistModel } = await import('../models/artist');
     const artist = await ArtistModel.findById(songData.artist_id);
     if (!artist) {
-      throw new Error('Artist not found');
+      throw new ValidationError('artist_id', 'Artist not found');
     }
 
     return SongModel.create(songData);
@@ -41,14 +61,27 @@ export class SongService {
     // Validate if song exists
     const existingSong = await SongModel.findById(id);
     if (!existingSong) {
-      throw new Error('Song not found');
+      throw new ValidationError('id', 'Song not found');
+    }
+
+    // Validate title if provided
+    if (songData.title) {
+      const titleValidation = Validators.songTitle(songData.title);
+      if (!titleValidation.valid) {
+        throw new ValidationError('title', titleValidation.errors[0]);
+      }
     }
 
     // Validate genre if provided
-    if (songData.genre) {
-      const validGenres = ['rnb', 'country', 'classic', 'rock', 'jazz'];
-      if (!validGenres.includes(songData.genre)) {
-        throw new Error('Invalid genre value');
+    if (songData.genre && !Validators.genre(songData.genre)) {
+      throw new ValidationError('genre', 'Genre must be one of: rnb, country, classic, rock, jazz');
+    }
+
+    // Validate album name if provided
+    if (songData.album_name) {
+      const albumValidation = Validators.albumName(songData.album_name);
+      if (!albumValidation.valid) {
+        throw new ValidationError('album_name', albumValidation.errors[0]);
       }
     }
 
@@ -57,7 +90,7 @@ export class SongService {
       const { ArtistModel } = await import('../models/artist');
       const artist = await ArtistModel.findById(songData.artist_id);
       if (!artist) {
-        throw new Error('Artist not found');
+        throw new ValidationError('artist_id', 'Artist not found');
       }
     }
 
@@ -68,7 +101,7 @@ export class SongService {
     // Check if song exists
     const song = await SongModel.findById(id);
     if (!song) {
-      throw new Error('Song not found');
+      throw new ValidationError('id', 'Song not found');
     }
 
     return SongModel.delete(id);

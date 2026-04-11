@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
@@ -26,6 +26,7 @@ import {
 import { useCreateUser, useUpdateUser } from "../../queries/resources";
 import { PasswordInput } from "../ui/password-input";
 import { DatePicker } from "../ui/date-picker";
+import { FrontendErrorHandler } from "../../utils/errorHandler";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createUserSchema } from "../../schema/user";
@@ -58,7 +59,7 @@ export function AddUserDialog({
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
 
-  const { register, handleSubmit, control, reset, formState: { errors } } =
+  const { register, handleSubmit, control, reset, setError, formState: { errors } } =
     useForm<CreateUserFormValues>({
       resolver: zodResolver(createUserSchema),
       defaultValues: {
@@ -72,6 +73,17 @@ export function AddUserDialog({
         address: initialValues?.address ?? "",
       },
     });
+
+  // Set field errors from API response
+  useEffect(() => {
+    const error = mode === "edit" ? updateUser.error : createUser.error;
+    if (error) {
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof CreateUserFormValues, { message });
+      });
+    }
+  }, [createUser.error, updateUser.error, setError, mode]);
 
   const onSubmit = (values: CreateUserFormValues) => {
     if (mode === "edit" && initialValues?.id) {

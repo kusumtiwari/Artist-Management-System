@@ -1,21 +1,14 @@
 import { Request, Response } from 'express'
 import { AuthService } from '../services/auth'
+import { ErrorHandler } from '../utils/validation'
 
 export class AuthController {
   static async signup(req: Request, res: Response) {
     try {
       const { user, token } = await AuthService.signup(req.body)
-
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
-
       res.status(201).json({ success: true, user })
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message })
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error)
     }
   }
 
@@ -27,12 +20,12 @@ export class AuthController {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: 24 * 60 * 60 * 1000, // 2 minutes for testing
       })
 
       res.status(200).json({ success: true, user })
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message })
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error)
     }
   }
 

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/user';
 import { CreateUserData } from '../types';
 import { AuthUtils } from '../utils/auth';
+import { Validators, ValidationError, ErrorHandler } from '../utils/validation';
 
 const mapGenderValue = (gender?: string): 'male' | 'female' | 'other' | undefined => {
   if (!gender) return undefined;
@@ -28,23 +29,71 @@ export class UserController {
       const userData: CreateUserData = req.body;
 
       // Validate required fields
-      if (!userData.first_name || !userData.last_name || !userData.email || !userData.password) {
-        return res.status(400).json({ success: false, message: 'All fields are required' });
+      if (!userData.first_name) {
+        throw new ValidationError('first_name', 'First name is required');
+      }
+      if (!userData.last_name) {
+        throw new ValidationError('last_name', 'Last name is required');
+      }
+      if (!userData.email) {
+        throw new ValidationError('email', 'Email is required');
+      }
+      if (!userData.password) {
+        throw new ValidationError('password', 'Password is required');
       }
 
-      if (userData.password.length < 6) {
-        return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+      // Validate email format
+      if (!Validators.email(userData.email)) {
+        throw new ValidationError('email', 'Please enter a valid email address');
       }
 
-      // Validate phone format
-      if (!validatePhone(userData.phone)) {
-        return res.status(400).json({ success: false, message: 'Phone can only contain digits and +' });
+      // Validate password strength
+      const passwordValidation = Validators.password(userData.password);
+      if (!passwordValidation.valid) {
+        throw new ValidationError('password', passwordValidation.errors[0]);
       }
 
-      // Check if user exists
+      // Validate names
+      const firstNameValidation = Validators.validateName(userData.first_name, 'First name');
+      if (!firstNameValidation.valid) {
+        throw new ValidationError('first_name', firstNameValidation.errors[0]);
+      }
+
+      const lastNameValidation = Validators.validateName(userData.last_name, 'Last name');
+      if (!lastNameValidation.valid) {
+        throw new ValidationError('last_name', lastNameValidation.errors[0]);
+      }
+
+      // Validate phone if provided
+      if (userData.phone && !Validators.phone(userData.phone)) {
+        throw new ValidationError('phone', 'Please enter a valid phone number');
+      }
+
+      // Validate gender if provided
+      if (userData.gender && !Validators.gender(userData.gender)) {
+        throw new ValidationError('gender', 'Gender must be male, female, or other');
+      }
+
+      // Validate date of birth if provided
+      if (userData.dob) {
+        const dobValidation = Validators.dateOfBirth(userData.dob);
+        if (!dobValidation.valid) {
+          throw new ValidationError('dob', dobValidation.errors[0]);
+        }
+      }
+
+      // Validate address if provided
+      if (userData.address) {
+        const addressValidation = Validators.address(userData.address);
+        if (!addressValidation.valid) {
+          throw new ValidationError('address', addressValidation.errors[0]);
+        }
+      }
+
+      // Check if user already exists
       const exists = await UserModel.exists(userData.email, userData.first_name, userData.last_name);
       if (exists) {
-        return res.status(400).json({ success: false, message: 'User already exists' });
+        throw new ValidationError('email', 'This email is already in use');
       }
 
       // Hash password and create user
@@ -56,8 +105,8 @@ export class UserController {
       const { password, ...userWithoutPassword } = user;
 
       res.status(201).json({ success: true, user: userWithoutPassword });
-    } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 
@@ -123,20 +172,66 @@ export class UserController {
       // Validate if user exists
       const existingUser = await UserModel.findById(id);
       if (!existingUser) {
-        return res.status(404).json({ success: false, message: 'User not found' });
+        throw new ValidationError('id', 'User not found');
       }
 
-      // Validate phone format if provided
-      if (updateData.phone && !validatePhone(updateData.phone)) {
-        return res.status(400).json({ success: false, message: 'Phone can only contain digits and +' });
+      // Validate email format if provided
+      if (updateData.email && !Validators.email(updateData.email)) {
+        throw new ValidationError('email', 'Please enter a valid email address');
+      }
+
+      // Validate password strength if provided
+      if (updateData.password) {
+        const passwordValidation = Validators.password(updateData.password);
+        if (!passwordValidation.valid) {
+          throw new ValidationError('password', passwordValidation.errors[0]);
+        }
+      }
+
+      // Validate names if provided
+      if (updateData.first_name) {
+        const firstNameValidation = Validators.validateName(updateData.first_name, 'First name');
+        if (!firstNameValidation.valid) {
+          throw new ValidationError('first_name', firstNameValidation.errors[0]);
+        }
+      }
+
+      if (updateData.last_name) {
+        const lastNameValidation = Validators.validateName(updateData.last_name, 'Last name');
+        if (!lastNameValidation.valid) {
+          throw new ValidationError('last_name', lastNameValidation.errors[0]);
+        }
+      }
+
+      // Validate phone if provided
+      if (updateData.phone && !Validators.phone(updateData.phone)) {
+        throw new ValidationError('phone', 'Please enter a valid phone number');
+      }
+
+      // Validate gender if provided
+      if (updateData.gender && !Validators.gender(updateData.gender)) {
+        throw new ValidationError('gender', 'Gender must be male, female, or other');
+      }
+
+      // Validate date of birth if provided
+      if (updateData.dob) {
+        const dobValidation = Validators.dateOfBirth(updateData.dob);
+        if (!dobValidation.valid) {
+          throw new ValidationError('dob', dobValidation.errors[0]);
+        }
+      }
+
+      // Validate address if provided
+      if (updateData.address) {
+        const addressValidation = Validators.address(updateData.address);
+        if (!addressValidation.valid) {
+          throw new ValidationError('address', addressValidation.errors[0]);
+        }
       }
 
       // Hash password if provided
       let hashedPassword;
       if (updateData.password) {
-        if (updateData.password.length < 6) {
-          return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
-        }
         hashedPassword = await AuthUtils.hashPassword(updateData.password);
       }
 
@@ -147,15 +242,15 @@ export class UserController {
       const updatedUser = await UserModel.update(id, { ...updateData, gender: mappedGender }, hashedPassword);
 
       if (!updatedUser) {
-        return res.status(404).json({ success: false, message: 'User not found' });
+        throw new ValidationError('id', 'User not found');
       }
 
       // Return user without password
       const { password, ...userWithoutPassword } = updatedUser;
 
       res.status(200).json({ success: true, user: userWithoutPassword });
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 
@@ -174,12 +269,61 @@ export class UserController {
       // Validate if user exists
       const existingUser = await UserModel.findById(id);
       if (!existingUser) {
-        return res.status(404).json({ success: false, message: 'User not found' });
+        throw new ValidationError('id', 'User not found');
       }
 
-      // Validate phone format if provided
-      if (updateData.phone && !validatePhone(updateData.phone)) {
-        return res.status(400).json({ success: false, message: 'Phone can only contain digits and +' });
+      // Validate email format if provided
+      if (updateData.email && !Validators.email(updateData.email)) {
+        throw new ValidationError('email', 'Please enter a valid email address');
+      }
+
+      // Validate password strength if provided
+      if (updateData.password) {
+        const passwordValidation = Validators.password(updateData.password);
+        if (!passwordValidation.valid) {
+          throw new ValidationError('password', passwordValidation.errors[0]);
+        }
+      }
+
+      // Validate names if provided
+      if (updateData.first_name) {
+        const firstNameValidation = Validators.validateName(updateData.first_name, 'First name');
+        if (!firstNameValidation.valid) {
+          throw new ValidationError('first_name', firstNameValidation.errors[0]);
+        }
+      }
+
+      if (updateData.last_name) {
+        const lastNameValidation = Validators.validateName(updateData.last_name, 'Last name');
+        if (!lastNameValidation.valid) {
+          throw new ValidationError('last_name', lastNameValidation.errors[0]);
+        }
+      }
+
+      // Validate phone if provided
+      if (updateData.phone && !Validators.phone(updateData.phone)) {
+        throw new ValidationError('phone', 'Please enter a valid phone number');
+      }
+
+      // Validate gender if provided
+      if (updateData.gender && !Validators.gender(updateData.gender)) {
+        throw new ValidationError('gender', 'Gender must be male, female, or other');
+      }
+
+      // Validate date of birth if provided
+      if (updateData.dob) {
+        const dobValidation = Validators.dateOfBirth(updateData.dob);
+        if (!dobValidation.valid) {
+          throw new ValidationError('dob', dobValidation.errors[0]);
+        }
+      }
+
+      // Validate address if provided
+      if (updateData.address) {
+        const addressValidation = Validators.address(updateData.address);
+        if (!addressValidation.valid) {
+          throw new ValidationError('address', addressValidation.errors[0]);
+        }
       }
 
       // Prevent non-admins from changing isAdmin flag
@@ -190,9 +334,6 @@ export class UserController {
       // Hash password if provided
       let hashedPassword;
       if (updateData.password) {
-        if (updateData.password.length < 6) {
-          return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
-        }
         hashedPassword = await AuthUtils.hashPassword(updateData.password);
       }
 
@@ -203,15 +344,15 @@ export class UserController {
       const updatedUser = await UserModel.update(id, { ...updateData, gender: mappedGender }, hashedPassword);
 
       if (!updatedUser) {
-        return res.status(404).json({ success: false, message: 'User not found' });
+        throw new ValidationError('id', 'User not found');
       }
 
       // Return user without password
       const { password, ...userWithoutPassword } = updatedUser;
 
       res.status(200).json({ success: true, user: userWithoutPassword });
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 

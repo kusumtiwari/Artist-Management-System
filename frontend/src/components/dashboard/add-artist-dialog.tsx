@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
@@ -26,6 +26,7 @@ import {
 import { useCreateArtist, useUpdateArtist } from "../../queries/resources";
 import { DatePicker } from "../ui/date-picker";
 import { YearPicker } from "../ui/year-picker";
+import { FrontendErrorHandler } from "../../utils/errorHandler";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createArtistSchema, type CreateArtistFormValues } from "../../schema/artist";
@@ -55,7 +56,7 @@ export function AddArtistDialog({
   const createArtist = useCreateArtist();
   const updateArtist = useUpdateArtist();
 
-  const { register, handleSubmit, control, reset, formState: { errors } } =
+  const { register, handleSubmit, control, reset, setError, formState: { errors } } =
     useForm<CreateArtistFormValues>({
       resolver: zodResolver(createArtistSchema),
       defaultValues: {
@@ -68,11 +69,24 @@ export function AddArtistDialog({
       },
     });
 
+  // Set field errors from API response
+  useEffect(() => {
+    const error = mode === "edit" ? updateArtist.error : createArtist.error;
+    if (error) {
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof CreateArtistFormValues, { message });
+      });
+    }
+  }, [createArtist.error, updateArtist.error, setError, mode]);
+
   const onSubmit = (values: CreateArtistFormValues) => {
     // Convert Date to string for API
     const apiData = {
       ...values,
       dob: values.dob ? (values.dob as any).toISOString().split('T')[0] : undefined,
+      first_release_year: values.first_release_year ?? undefined,
+      no_of_albums_released: values.no_of_albums_released ?? undefined,
     };
 
     if (mode === "edit" && initialValues?.id) {

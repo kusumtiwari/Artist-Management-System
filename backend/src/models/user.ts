@@ -61,7 +61,6 @@ export class UserModel {
       'SELECT id, first_name, last_name, email, password, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE email = ?',
       [email]
     );
-
     const users = rows as any[];
     return users.length ? this.mapUserRow(users[0]) : null;
   }
@@ -71,7 +70,6 @@ export class UserModel {
       'SELECT id, first_name, last_name, email, password, phone, dob, gender, address, is_admin as isAdmin, created_at, updated_at FROM users WHERE id = ?',
       [id]
     );
-
     const users = rows as any[];
     return users.length ? this.mapUserRow(users[0]) : null;
   }

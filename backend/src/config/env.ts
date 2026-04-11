@@ -18,7 +18,7 @@ if (!process.env.JWT_SECRET) {
 }
 
 const env: EnvConfig = {
-  port: process.env.PORT ? parseInt(process.env.PORT) : 5000,
+  port: process.env.PORT ? parseInt(process.env.PORT) : 8000,
   db: {
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',

@@ -11,4 +11,4 @@ router.use('/artists', artistRoutes);
 router.use('/songs', songRoutes);
 router.use('/users', userRoutes);
 
-export default router;
+export default router; 

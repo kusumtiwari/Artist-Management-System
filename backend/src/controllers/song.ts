@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { SongService } from '../services/song';
 import { CreateSongData } from '../types';
+import { ErrorHandler } from '../utils/validation';
 
 export class SongController {
   static async create(req: Request, res: Response) {
@@ -8,8 +9,8 @@ export class SongController {
       const songData: CreateSongData = req.body;
       const song = await SongService.create(songData);
       res.status(201).json({ success: true, song });
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 
@@ -46,8 +47,8 @@ export class SongController {
       }
 
       res.status(200).json({ success: true, song });
-    } catch (err: any) {
-      res.status(500).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 
@@ -63,8 +64,8 @@ export class SongController {
       }
 
       res.status(200).json({ success: true, song });
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 
@@ -78,8 +79,8 @@ export class SongController {
       }
 
       res.status(200).json({ success: true, message: 'Song deleted successfully' });
-    } catch (err: any) {
-      res.status(400).json({ success: false, message: err.message });
+    } catch (error) {
+      ErrorHandler.sendErrorResponse(res, error);
     }
   }
 }

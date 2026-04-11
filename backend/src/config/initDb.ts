@@ -1,3 +1,5 @@
+// database initialization , created table 
+
 import pool from './db';
 
 export const initializeDatabase = async () => {

@@ -153,6 +153,9 @@ export function ArtistsTable() {
                       initialValues={{
                         ...artist,
                         dob: artist.dob ? new Date(artist.dob) : null,
+                        address: artist.address || undefined,
+                        first_release_year: artist.first_release_year || undefined,
+                        no_of_albums_released: artist.no_of_albums_released || undefined,
                         id: artist.id,
                       }}
                       onArtistCreated={() => artistsQuery.refetch()}

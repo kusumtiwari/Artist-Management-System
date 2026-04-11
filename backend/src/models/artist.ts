@@ -122,7 +122,6 @@ export class ArtistModel {
     const [rows] = await pool.execute(
       'SELECT id, name, dob, gender, address, first_release_year, no_of_albums_released, created_at, updated_at FROM artists ORDER BY name'
     );
-
     return rows as Artist[];
   }
 }

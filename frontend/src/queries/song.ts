@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { songService } from '../services/song'
 import type { CreateSongPayload } from '../types/resources'
 import { useToast } from '../components/ui/toast'
+import { FrontendErrorHandler } from '../utils/errorHandler'
 
 export const useSongsByArtist = (artistId: number, page: number = 1, limit: number = 10, search: string = '') => {
   return useQuery({
@@ -32,8 +33,16 @@ export const useCreateSong = () => {
       })
       showToast('Song created successfully', 'success')
     },
-    onError: (error: any) => {
-      showToast(error.response?.data?.message || 'Failed to create song', 'error')
+    onError: (error) => {
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      const generalError = FrontendErrorHandler.getErrorMessage(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        // Field errors will be handled by the form
+        return;
+      }
+
+      showToast(generalError, 'error')
     }
   })
 }
@@ -54,8 +63,16 @@ export const useUpdateSong = () => {
       }
       showToast('Song updated successfully', 'success')
     },
-    onError: (error: any) => {
-      showToast(error.response?.data?.message || 'Failed to update song', 'error')
+    onError: (error) => {
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      const generalError = FrontendErrorHandler.getErrorMessage(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        // Field errors will be handled by the form
+        return;
+      }
+
+      showToast(generalError, 'error')
     }
   })
 }

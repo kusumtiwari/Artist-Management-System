@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { resourcesService } from '../services/resources'
 import { useToast } from '../components/ui/toast'
+import { FrontendErrorHandler } from '../utils/errorHandler'
 import type {
   ArtistsResponse,
   CreateArtistPayload,
@@ -43,7 +44,15 @@ export const useCreateUser = () => {
       showToast('User created successfully', 'success')
     },
     onError: (error) => {
-      showToast(error instanceof Error ? error.message : 'Create user failed', 'error')
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      const generalError = FrontendErrorHandler.getErrorMessage(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        // Field errors will be handled by the form
+        return;
+      }
+
+      showToast(generalError, 'error')
     },
   })
 }
@@ -60,7 +69,15 @@ export const useUpdateUser = () => {
       showToast('User updated successfully', 'success')
     },
     onError: (error) => {
-      showToast(error instanceof Error ? error.message : 'Update user failed', 'error')
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      const generalError = FrontendErrorHandler.getErrorMessage(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        // Field errors will be handled by the form
+        return;
+      }
+
+      showToast(generalError, 'error')
     },
   })
 }
@@ -92,7 +109,15 @@ export const useCreateArtist = () => {
       showToast('Artist created successfully', 'success')
     },
     onError: (error) => {
-      showToast(error instanceof Error ? error.message : 'Create artist failed', 'error')
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      const generalError = FrontendErrorHandler.getErrorMessage(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        // Field errors will be handled by the form
+        return;
+      }
+
+      showToast(generalError, 'error')
     },
   })
 }
@@ -109,7 +134,15 @@ export const useUpdateArtist = () => {
       showToast('Artist updated successfully', 'success')
     },
     onError: (error) => {
-      showToast(error instanceof Error ? error.message : 'Update artist failed', 'error')
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      const generalError = FrontendErrorHandler.getErrorMessage(error);
+
+      if (Object.keys(fieldErrors).length > 0) {
+        // Field errors will be handled by the form
+        return;
+      }
+
+      showToast(generalError, 'error')
     },
   })
 }

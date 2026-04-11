@@ -6,6 +6,7 @@ import { Input } from '../ui/Input'
 import { Label } from '../ui/label'
 import { Button } from '../ui/button'
 import { useCreateSong, useUpdateSong } from '../../queries/song'
+import { FrontendErrorHandler } from '../../utils/errorHandler'
 import type { Song, CreateSongPayload } from '../../types/resources'
 
 const GENRES = ['rnb', 'country', 'classic', 'rock', 'jazz'] as const
@@ -39,7 +40,7 @@ export function AddSongDialog({
   const isOpen = controlledOpen ?? internalOpen
   const setIsOpen = controlledOnOpenChange ?? setInternalOpen
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<SongFormValues>({
+  const { register, handleSubmit, reset, setError, formState: { errors } } = useForm<SongFormValues>({
     defaultValues: {
       title: song?.title || '',
       album_name: song?.album_name || '',
@@ -54,6 +55,17 @@ export function AddSongDialog({
       genre: song?.genre || 'rnb',
     })
   }, [song, reset])
+
+  // Set field errors from API response
+  useEffect(() => {
+    const error = song ? updateSong.error : createSong.error;
+    if (error) {
+      const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof SongFormValues, { message });
+      });
+    }
+  }, [createSong.error, updateSong.error, setError, song]);
 
   const onSubmit: SubmitHandler<SongFormValues> = (data) => {
     const payload: CreateSongPayload = {
@@ -90,7 +102,7 @@ export function AddSongDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="!p-0 max-w-xl md:w-130">
+      <DialogContent className="p-0! max-w-xl md:w-130">
         <DialogHeader>
           <DialogTitle>{song ? 'Edit Song' : 'Add Song'}</DialogTitle>
         </DialogHeader>

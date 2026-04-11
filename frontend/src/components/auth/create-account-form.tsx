@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Form, FormContent, FormGroup } from "../ui/form";
@@ -6,10 +7,11 @@ import { Label } from "../ui/label";
 import { PasswordInput } from "../ui/password-input";
 import { ROUTES } from "../../router/routes";
 import { useSignup } from "../../queries/auth";
+import { FrontendErrorHandler } from "../../utils/errorHandler";
 
 const CreateAccountForm = () => {
   const navigate = useNavigate();
-  const { mutate, isPending } = useSignup();
+  const { mutate, isPending, error } = useSignup();
 
   const onSubmit = (data: {
     email: string;
@@ -18,67 +20,81 @@ const CreateAccountForm = () => {
     last_name: string;
   }) => {
     mutate(data, {
-      onSuccess: (res) => {
+      onSuccess: () => {
         navigate("/login");
-      },
-      onError: (err: any) => {
-        console.error(err.message);
       },
     });
   };
+
   return (
     <Form onSubmit={onSubmit}>
-      {({ register, formState: { errors } }) => (
-        <FormContent className="gap-5">
-          <FormGroup>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              placeholder="Enter your email"
-              {...register("email")}
-            />
-          </FormGroup>
+      {({ register, formState: { errors }, setError }) => {
+        // Set field errors from API response
+        React.useEffect(() => {
+          if (error) {
+            const fieldErrors = FrontendErrorHandler.extractFieldErrors(error);
+            Object.entries(fieldErrors).forEach(([field, message]) => {
+              setError(field as keyof typeof errors, { message });
+            });
+          }
+        }, [error, setError]);
 
-          <FormGroup>
-            <Label htmlFor="first_name">First Name</Label>
-            <Input
-              id="first_name"
-              placeholder="Enter your first name"
-              {...register("first_name")}
-            />
-          </FormGroup>
+        return (
+          <FormContent className="gap-5">
+            <FormGroup>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                placeholder="Enter your email"
+                {...register("email")}
+                error={errors.email?.message}
+              />
+            </FormGroup>
 
-          <FormGroup>
-            <Label htmlFor="last_name">Last Name</Label>
-            <Input
-              id="last_name"
-              placeholder="Enter your last name"
-              {...register("last_name")}
-            />
-          </FormGroup>
+            <FormGroup>
+              <Label htmlFor="first_name">First Name</Label>
+              <Input
+                id="first_name"
+                placeholder="Enter your first name"
+                {...register("first_name")}
+                error={errors.first_name?.message}
+              />
+            </FormGroup>
 
-          <FormGroup>
-            <Label htmlFor="password">Password</Label>
-            <PasswordInput
-              {...register("password")}
-              placeholder="Enter your password"
-            />
-          </FormGroup>
+            <FormGroup>
+              <Label htmlFor="last_name">Last Name</Label>
+              <Input
+                id="last_name"
+                placeholder="Enter your last name"
+                {...register("last_name")}
+                error={errors.last_name?.message}
+              />
+            </FormGroup>
 
-          <Button isLoading={isPending} type="submit" className="w-full mt-2">
-            Sign up
-          </Button>
-          <div className="flex items-center justify-center gap-2 mt-2">
-            <p className="text-14 text-text-default-tertiary">{`Already have an account?`}</p>
-            <Link
-              to={ROUTES.LOGIN}
-              className="text-sm font-medium text-text-primary hover:text-text-primary-hover underline underline-offset-4"
-            >
-              Login
-            </Link>
-          </div>
-        </FormContent>
-      )}
+            <FormGroup>
+              <Label htmlFor="password">Password</Label>
+              <PasswordInput
+                {...register("password")}
+                placeholder="Enter your password"
+                error={errors.password?.message}
+              />
+            </FormGroup>
+
+            <Button isLoading={isPending} type="submit" className="w-full mt-2">
+              Sign up
+            </Button>
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <p className="text-14 text-text-default-tertiary">{`Already have an account?`}</p>
+              <Link
+                to={ROUTES.LOGIN}
+                className="text-sm font-medium text-text-primary hover:text-text-primary-hover underline underline-offset-4"
+              >
+                Login
+              </Link>
+            </div>
+          </FormContent>
+        );
+      }}
     </Form>
   );
 };

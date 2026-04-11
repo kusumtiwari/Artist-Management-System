@@ -1,4 +1,5 @@
 import { UserIcon } from "../../assets";
+import { MusicIcon } from "../../assets/icons";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ThemeToggle } from "../ui/theme-toggle";
@@ -23,18 +24,7 @@ export default function Topbar({
       }}
     >
       {/* logo */}
-      <div className="flex items-center gap-2">
-        <div
-          className="w-6 h-6 rounded-sm"
-          style={{ background: "var(--bg-fill-primary)" }}
-        />
-        <span
-          className="text-sm font-semibold tracking-wide uppercase"
-          style={{ color: "var(--text-default)" }}
-        >
-          AMS
-        </span>
-      </div>
+      <MusicIcon/>
 
       {/* right */}
       <div className="flex items-center gap-10">

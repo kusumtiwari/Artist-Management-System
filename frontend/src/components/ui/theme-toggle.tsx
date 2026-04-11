@@ -1,6 +1,6 @@
 // components/ui/ThemeToggle.tsx
 import { useEffect, useState } from "react";
-import { SunIcon, MoonIcon } from "../../assets"; // swap with your icon imports
+import { SunIcon, MoonIcon } from "../../assets/icons";
 
 export function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
@@ -31,11 +31,7 @@ export function ThemeToggle() {
       }}
       aria-label="Toggle theme"
     >
-      {isDark ? (
-        <SunIcon className="h-4 w-4 text-white" />
-      ) : (
-        <MoonIcon className="h-4 w-4 text-red-500" />
-      )}
+     {isDark ? <SunIcon /> : <MoonIcon />}
     </button>
   );
 }

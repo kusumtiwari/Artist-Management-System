@@ -173,7 +173,6 @@ export class UserModel {
       'DELETE FROM users WHERE id = ?',
       [id]
     );
-
     return result.affectedRows > 0;
   }
 

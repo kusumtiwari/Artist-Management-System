@@ -17,7 +17,7 @@ export interface User {
   email: string
   phone?: string
   dob?: string
-  gender?: 'm' | 'f' | 'o'
+  gender?: 'male' | 'female' | 'other'
   address?: string
   isAdmin: boolean
   created_at: string

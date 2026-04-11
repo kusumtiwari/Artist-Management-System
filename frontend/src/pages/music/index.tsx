@@ -3,7 +3,6 @@ import { DashboardLayout } from '../../components/layout/dashboard-layout'
 import { SongsTable } from '../../components/dashboard/songs-table'
 import { useMe, useLogout } from '../../queries/auth'
 import { useArtist } from '../../queries/resources'
-import { useNavigate } from 'react-router-dom'
 
 const ArtistMusicPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -11,16 +10,12 @@ const ArtistMusicPage = () => {
   const { data: currentUser } = useMe()
   const { data: artist } = useArtist(artistId)
   const logout = useLogout()
-  const navigate = useNavigate()
 
   const username = currentUser ? `${currentUser.first_name} ${currentUser.last_name}` : 'Admin'
   const artistName = artist?.name || 'Unknown Artist'
 
   const handleLogout = () => {
-    logout.mutate(undefined, {
-      onSuccess: () => navigate('/login'),
-      onError: () => navigate('/login'),
-    })
+    logout.mutate(undefined)
   }
 
   if (currentUser && !currentUser.isAdmin) {

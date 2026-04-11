@@ -141,7 +141,7 @@ export function ArtistsTable() {
                 <TableCell className="min-w-25">
                   <div className="flex items-center gap-3">
                     <button
-                      className="text-primary underline hover:text-primary-dark transition-colors"
+                      className="text-primary cursor-pointer underline hover:text-primary-dark transition-colors"
                       onClick={() => {
                         navigate(`/artist/${artist.id}/songs`);
                       }}

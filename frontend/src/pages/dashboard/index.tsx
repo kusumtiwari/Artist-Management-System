@@ -14,7 +14,6 @@ const TABS: Tab[] = [
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'users' | 'artists'>('users')
-  const navigate = useNavigate()
   const { data: currentUser } = useMe();
 
   console.log(currentUser,'current user')
@@ -36,10 +35,7 @@ export default function DashboardPage() {
   }
 
   const handleLogout = () => {
-    logout.mutate(undefined, {
-      onSuccess: () => navigate('/login'),
-      onError: () => navigate('/login'),
-    })
+    logout.mutate(undefined)
   }
 
   return (

@@ -97,14 +97,18 @@ export function UsersTable() {
             usersData?.users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="min-w-45">
-                  {user.first_name} {user.last_name}
+                  {user.first_name} {user.last_name} ({user.isAdmin ? "Admin" : "User"})
                 </TableCell>
                 <TableCell className="min-w-55">{user.email}</TableCell>
-                <TableCell className="min-w-40">
-                  {user.phone ?? "—"}
-                </TableCell>
+                <TableCell className="min-w-40">{user.phone ?? "—"}</TableCell>
                 <TableCell className="min-w-35">
-                  {user.gender ?? "—"}
+                  {user.gender === "male"
+                    ? "Male"
+                    : user.gender === "female"
+                      ? "Female"
+                      : user.gender === "other"
+                        ? "Other"
+                        : "—"}
                 </TableCell>
                 <TableCell className="min-w-40">
                   {user.dob ? new Date(user.dob).toLocaleDateString() : "—"}
@@ -152,17 +156,19 @@ export function UsersTable() {
               </TableRow>
             ))}
         </TableBody>
-        
       </Table>
-       {!usersQuery.isLoading && (usersData?.pagination?.total ?? 0) > PAGE_SIZE && (
-        <div className="flex justify-end mt-4">
-          <Pagination
-            currentPage={page}
-            pageCount={Math.ceil((usersData?.pagination?.total ?? 0) / PAGE_SIZE)}
-            onPageChange={setPage}
-          />
-        </div>
-      )}
+      {!usersQuery.isLoading &&
+        (usersData?.pagination?.total ?? 0) > PAGE_SIZE && (
+          <div className="flex justify-end mt-4">
+            <Pagination
+              currentPage={page}
+              pageCount={Math.ceil(
+                (usersData?.pagination?.total ?? 0) / PAGE_SIZE,
+              )}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
 
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="p-0!">

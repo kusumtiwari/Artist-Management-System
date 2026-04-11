@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { UserIcon } from "../../assets";
 import { MusicIcon } from "../../assets/icons";
 import { Button } from "../ui/button";
@@ -15,6 +16,7 @@ export default function Topbar({
   onLogout,
   role,
 }: TopbarProps) {
+  const navigate = useNavigate();
   return (
     <header
       className="w-full bg-background h-14 px-10 xl:px-16 flex items-center justify-between border-b"
@@ -24,7 +26,10 @@ export default function Topbar({
       }}
     >
       {/* logo */}
-      <MusicIcon/>
+      <div onClick={() => navigate('/')}>
+      <MusicIcon className="cursor-pointer"/>
+      </div>
+
 
       {/* right */}
       <div className="flex items-center gap-10">

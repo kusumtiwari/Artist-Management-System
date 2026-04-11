@@ -40,7 +40,7 @@ const ArtistMusicPage = () => {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-text-default">Artist Songs</h1>
-          <p className="text-text-default-secondary">Manage songs for this artist</p>
+          <p className="text-text-default-secondary">Manage songs for {artistName}</p>
         </div>
         <SongsTable artistId={artistId} artistName={artistName} />
       </div>

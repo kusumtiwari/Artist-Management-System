@@ -51,10 +51,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
 
   return (
     <div>
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
-        <p className="text-sm text-text-default-secondary">
-          Manage songs for {artistName}.
-        </p>
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-end mb-4">
         <div className="flex items-center gap-2">
           <Input
             type="text"

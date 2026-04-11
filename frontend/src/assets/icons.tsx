@@ -50,14 +50,19 @@ export function MusicIcon({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="220"
-      height="40"
       viewBox="0 0 220 40"
       fill="none"
       className={className}
+      style={{ width: 220, height: 40, flexShrink: 0 }}
     >
       {/* Music note icon */}
-      <path d="M9 30V17l12-2v13" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M9 30V17l12-2v13"
+        stroke="#16a34a"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <circle cx="6" cy="30" r="3" stroke="#16a34a" strokeWidth="2" />
       <circle cx="18" cy="28" r="3" stroke="#16a34a" strokeWidth="2" />
 
@@ -80,20 +85,18 @@ export function MusicNoteIcon({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#16a34a"
+      stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
     >
-      {/* Stem */}
+      {/* note stem */}
       <path d="M9 18V6l10-2v12" />
 
-      {/* Notes */}
+      {/* note heads */}
       <circle cx="6" cy="18" r="3" />
       <circle cx="18" cy="16" r="3" />
     </svg>

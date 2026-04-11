@@ -9,7 +9,11 @@ import {
   TableRow,
   TableSkeleton,
 } from "../ui/table";
-import { useArtists, useDeleteArtist, useExportArtistCSV } from "../../queries/resources";
+import {
+  useArtists,
+  useDeleteArtist,
+  useExportArtistCSV,
+} from "../../queries/resources";
 import { AddArtistDialog } from "./add-artist-dialog";
 import { ImportArtistDialog } from "./import-artist-dialog";
 import type { Artist, ArtistsResponse } from "../../types/resources";
@@ -20,15 +24,16 @@ import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
+import { MusicIcon, MusicNoteIcon } from "../../assets/icons";
 
 const PAGE_SIZE = 10;
 const TOTAL_COLUMNS = 9;
 
 function ExportButton() {
   const exportArtists = useExportArtistCSV();
-  
+
   return (
-    <Button 
+    <Button
       intent="secondary"
       onClick={() => exportArtists.mutate()}
       isLoading={exportArtists.isPending}
@@ -115,7 +120,14 @@ export function ArtistsTable() {
 
           {!artistsQuery.isLoading &&
             artistsData?.artists.map((artist) => (
-              <TableRow key={artist.id}>
+              <TableRow
+                key={artist.id}
+                clickable
+                onClick={() => {
+                  navigate(`/artist/${artist.id}/songs`);
+                }}
+                className="cursor-pointer hover:bg-secondary"
+              >
                 <TableCell className="min-w-45">{artist.name}</TableCell>
                 <TableCell className="min-w-30">
                   {artist.gender ?? "—"}
@@ -141,12 +153,13 @@ export function ArtistsTable() {
                 <TableCell className="min-w-25">
                   <div className="flex items-center gap-3">
                     <button
-                      className="text-primary cursor-pointer underline hover:text-primary-dark transition-colors"
-                      onClick={() => {
+                      className="text-primary hover:text-primary-dark transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         navigate(`/artist/${artist.id}/songs`);
                       }}
                     >
-                      Songs
+                      <MusicNoteIcon className="w-6 h-5 cursor-pointer" />
                     </button>
                     <AddArtistDialog
                       mode="edit"
@@ -154,8 +167,10 @@ export function ArtistsTable() {
                         ...artist,
                         dob: artist.dob ? new Date(artist.dob) : null,
                         address: artist.address || undefined,
-                        first_release_year: artist.first_release_year || undefined,
-                        no_of_albums_released: artist.no_of_albums_released || undefined,
+                        first_release_year:
+                          artist.first_release_year || undefined,
+                        no_of_albums_released:
+                          artist.no_of_albums_released || undefined,
                         id: artist.id,
                       }}
                       trigger={

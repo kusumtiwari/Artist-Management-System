@@ -122,10 +122,6 @@ export function ArtistsTable() {
             artistsData?.artists.map((artist) => (
               <TableRow
                 key={artist.id}
-                clickable
-                onClick={() => {
-                  navigate(`/artist/${artist.id}/songs`);
-                }}
                 className="cursor-pointer hover:bg-secondary"
               >
                 <TableCell className="min-w-45">{artist.name}</TableCell>

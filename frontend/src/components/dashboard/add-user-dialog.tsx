@@ -29,10 +29,8 @@ import { DatePicker } from "../ui/date-picker";
 import { FrontendErrorHandler } from "../../utils/errorHandler";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createUserSchema } from "../../schema/user";
-import type z from "zod";
-
-type CreateUserFormValues = z.infer<typeof createUserSchema>;
+import { createUserSchema, updateUserSchema } from "../../schema/user";
+import type { CreateUserFormValues } from "../../schema/user";
 
 interface AddUserDialogProps {
   mode?: "add" | "edit";
@@ -57,20 +55,28 @@ export function AddUserDialog({
   const createUser = useCreateUser();
   const updateUser = useUpdateUser();
 
-  const { register, handleSubmit, control, reset, setError, formState: { errors } } =
-    useForm<CreateUserFormValues>({
-      resolver: zodResolver(createUserSchema),
-      defaultValues: {
-        first_name: initialValues?.first_name ?? "",
-        last_name: initialValues?.last_name ?? "",
-        email: initialValues?.email ?? "",
-        password: "",
-        phone: initialValues?.phone ?? "",
-        dob: initialValues?.dob ?? null,
-        gender: initialValues?.gender ?? undefined,
-        address: initialValues?.address ?? "",
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setError,
+    formState: { errors, dirtyFields },
+  } = useForm<CreateUserFormValues>({
+    resolver: zodResolver(
+      mode === "edit" ? updateUserSchema : createUserSchema,
+    ),
+    defaultValues: {
+      first_name: initialValues?.first_name ?? "",
+      last_name: initialValues?.last_name ?? "",
+      email: initialValues?.email ?? "",
+      password: "",
+      phone: initialValues?.phone ?? "",
+      dob: initialValues?.dob ?? null,
+      gender: initialValues?.gender ?? undefined,
+      address: initialValues?.address ?? "",
+    },
+  });
 
   // Set field errors from API response
   useEffect(() => {
@@ -84,28 +90,35 @@ export function AddUserDialog({
   }, [createUser.error, updateUser.error, setError, mode]);
 
   const onSubmit = (values: CreateUserFormValues) => {
-    if (mode === "edit" && initialValues?.id) {
-      updateUser.mutate(
-        { userId: initialValues.id, data: values },
-        {
-          onSuccess: () => {
-            setIsOpen(false);
-            reset();
-          },
-        }
-      );
-      return;
-    }
+  const payload = {
+    ...values,
+    dob: values.dob
+      ? (values.dob instanceof Date
+          ? values.dob.toISOString().split('T')[0]
+          : values.dob)
+      : undefined,
+  }
 
-    createUser.mutate(values, {
-      onSuccess: () => {
-        setIsOpen(false);
-        reset();
-      },
-    });
-  };
+  if (mode === "edit" && initialValues?.id) {
+    const dirtyPayload = Object.fromEntries(
+      Object.keys(dirtyFields).map((key) => {
+        const val = payload[key as keyof typeof payload]
+        return [key, val]
+      })
+    )
+    updateUser.mutate({ userId: initialValues.id, data: dirtyPayload }, {
+      onSuccess: () => { setIsOpen(false); reset() }
+    })
+    return
+  }
 
-  const isLoading = mode === "edit" ? updateUser.isPending : createUser.isPending;
+  createUser.mutate(payload, {
+    onSuccess: () => { setIsOpen(false); reset() }
+  })
+}
+
+  const isLoading =
+    mode === "edit" ? updateUser.isPending : createUser.isPending;
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -119,14 +132,18 @@ export function AddUserDialog({
 
       <DialogContent className="max-w-xl md:w-225 space-y-2 max-h-[90vh] overflow-auto">
         <DialogHeader className="p-0!">
-          <DialogTitle>{mode === "edit" ? "Edit user" : "Add new user"}</DialogTitle>
+          <DialogTitle>
+            {mode === "edit" ? "Edit user" : "Add new user"}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="pt-2">
           <FormContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormGroup>
-                <Label htmlFor="first_name" required>First name</Label>
+                <Label htmlFor="first_name" required>
+                  First name
+                </Label>
                 <Input
                   {...register("first_name")}
                   placeholder="First name"
@@ -134,7 +151,9 @@ export function AddUserDialog({
                 />
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="last_name" required>Last name</Label>
+                <Label htmlFor="last_name" required>
+                  Last name
+                </Label>
                 <Input
                   {...register("last_name")}
                   placeholder="Last name"
@@ -145,7 +164,9 @@ export function AddUserDialog({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormGroup>
-                <Label htmlFor="email" required>Email</Label>
+                <Label htmlFor="email" required>
+                  Email
+                </Label>
                 <Input
                   type="email"
                   {...register("email")}
@@ -154,7 +175,9 @@ export function AddUserDialog({
                 />
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="password" required={mode === "add"}>Password</Label>
+                <Label htmlFor="password" required={mode === "add"}>
+                  Password
+                </Label>
                 <PasswordInput
                   {...register("password")}
                   placeholder="Enter your password"
@@ -189,7 +212,6 @@ export function AddUserDialog({
                         onChange={field.onChange}
                         placeholder="Select date"
                         className="h-11 w-full bg-transparent"
-                        iconAlign="right"
                         error={!!fieldState.error}
                         errorMessage={fieldState.error?.message}
                         clearable
@@ -206,7 +228,10 @@ export function AddUserDialog({
                     name="gender"
                     control={control}
                     render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
                         <SelectTrigger fullWidth>
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
@@ -232,7 +257,9 @@ export function AddUserDialog({
 
             <DialogFooter className="flex flex-col gap-2 sm:flex-row sm:justify-end">
               <DialogClose asChild>
-                <Button intent="outline" size={2}>Cancel</Button>
+                <Button intent="outline" size={2}>
+                  Cancel
+                </Button>
               </DialogClose>
               <Button type="submit" size={2} isLoading={isLoading}>
                 {mode === "edit" ? "Update user" : "Save user"}

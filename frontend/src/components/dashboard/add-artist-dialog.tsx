@@ -172,7 +172,7 @@ export function AddArtistDialog({
                       onChange={field.onChange}
                       placeholder="Select date"
                       className="h-11 w-full bg-transparent"
-                      iconAlign="right"
+                   
                       error={!!fieldState.error}
                       errorMessage={fieldState.error?.message}
                       clearable

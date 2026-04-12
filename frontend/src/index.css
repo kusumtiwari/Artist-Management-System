@@ -302,3 +302,50 @@ html[data-theme="dark"] {
 *::-webkit-scrollbar-thumb:hover {
   background: var(--scrollbar-thumb-hover);
 }
+.rdp-custom .react-datepicker {
+  overflow: visible !important;  /* was overflow: hidden */
+}
+
+.rdp-custom .react-datepicker-popper[data-placement^="bottom"] {
+  padding-top: 8px !important;
+}
+.rdp-custom .react-datepicker-popper[data-placement^="top"] {
+  padding-bottom: 8px !important;
+}
+
+.rdp-custom .react-datepicker-wrapper {
+  width: 100%;
+}
+.rdp-custom .react-datepicker__input-container {
+  width: 100%;
+}
+.rdp-custom .react-datepicker__year-dropdown {
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--bg-background);
+  border: 1px solid var(--border-border);
+  border-radius: 6px;
+  top: 30px;
+}
+.rdp-custom .react-datepicker__navigation--years-upcoming,
+.rdp-custom .react-datepicker__navigation--years-previous {
+  display: none;  /* hide the up/down arrows */
+}
+.rdp-custom .react-datepicker__year-option {
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--text-default);
+}
+.rdp-custom .react-datepicker__year-option:hover {
+  background: var(--bg-surface);
+}
+.rdp-custom .react-datepicker__year-option--selected_year {
+  background: #16a34a;
+  color: white;
+}
+.rdp-custom .react-datepicker__year-option--selected_year:hover {
+  background: #16a34a;
+}
+.rdp-custom .react-datepicker__year-option .react-datepicker__navigation--years {
+  display: none;
+}

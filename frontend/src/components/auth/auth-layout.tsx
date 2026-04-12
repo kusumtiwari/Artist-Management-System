@@ -11,7 +11,7 @@ interface AuthWrapperProps {
   logo?: string;
 }
 
-const AuthWrapper: React.FC<AuthWrapperProps> = ({ children, title, description, className, logo = '/logo.png' }) => {
+const AuthWrapper: React.FC<AuthWrapperProps> = ({ children, title, description, className }) => {
   return (
     <main className="w-full bg-background overflow-x-hidden flex flex-col items-center justify-center min-h-screen">
       <Container className="relative w-full flex-1 max-w-[600px] pt-[90px]">

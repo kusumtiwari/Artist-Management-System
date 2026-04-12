@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { DashboardLayout } from '../../components/layout/dashboard-layout'
 import Tabs from '../../components/ui/tabs'
 import type { Tab } from '../../components/ui/tabs'

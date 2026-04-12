@@ -189,7 +189,7 @@ function Calendar({
       components={{
         // render caption as a static function to avoid re-creation
         MonthCaption: () => caption,
-        Chevron: () => null,
+       
       }}
       {...props}
     />

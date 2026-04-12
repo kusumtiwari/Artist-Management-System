@@ -283,7 +283,7 @@ export function DatePicker({
       <div className="rdp-custom w-full">
         <ReactDatePicker
           selected={value ?? null}
-          onChange={(date) => onChange?.(date ?? null)}
+          onChange={(date: Date | null) => onChange?.(date)}
           disabled={disabled}
           maxDate={new Date()}
           filterDate={

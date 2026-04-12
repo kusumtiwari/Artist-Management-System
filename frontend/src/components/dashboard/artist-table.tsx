@@ -118,8 +118,6 @@ export function ArtistsTable() {
       </div>
     );
   }
-
-  // 🔥 4. Success
   return (
     <div>
       {/* Header */}
@@ -159,11 +157,11 @@ export function ArtistsTable() {
         </TableHeader>
 
         <TableBody>
-          {artistsData.artists.map((artist) => (
+          {artistsData.artists.map((artist,index) => (
             <TableRow
               key={artist.id}
-              clickable
-              onClick={() => navigate(`/artist/${artist.id}/songs`)}
+              // clickable
+              // onClick={() => navigate(`/artist/${artist.id}/songs`)}
             >
               <TableCell className="min-w-45">{artist.name}</TableCell>
               <TableCell className="min-w-30">

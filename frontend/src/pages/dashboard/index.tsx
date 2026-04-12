@@ -5,6 +5,9 @@ import type { Tab } from '../../components/ui/tabs'
 import { useLogout, useMe } from '../../queries/auth'
 import { ArtistsTable } from '../../components/dashboard/artist-table'
 import { UsersTable } from '../../components/dashboard/user-table'
+import { ErrorIcon } from '../../assets'
+import { Button } from '../../components/ui/button'
+import { useNavigate } from 'react-router-dom'
 
 const TABS: Tab[] = [
   { label: 'Users', value: 'users' },
@@ -17,15 +20,17 @@ export default function DashboardPage() {
 
   console.log(currentUser,'current user')
   const logout = useLogout()
+  const navigate = useNavigate()
 
   const username = currentUser ? `${currentUser.first_name} ${currentUser.last_name}` : 'Admin'
 
   if (currentUser && !currentUser.isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg-background)' }}>
-        <div className="max-w-md w-full text-center p-6 rounded-lg shadow-sm bg-white">
+        <div className="max-w-md w-full text-center p-6 flex items-center justify-center gap-4 flex-col rounded-lg shadow-sm bg-white">
+          <ErrorIcon className='w-24 h-24'/>
           <h2 className="text-xl font-semibold">Access denied</h2>
-          <p className="mt-4 text-sm text-default-secondary">
+          <p className="text-sm text-default-secondary">
             You are signed in, but only admin users can access the dashboard.
           </p>
         </div>

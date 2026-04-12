@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { ArtistController } from '../controllers/artist';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken, authorizeAdmin } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -24,14 +24,14 @@ const upload = multer({
 router.use(authenticateToken);
 
 // Artist CRUD routes
-router.post('/', ArtistController.create);
-router.get('/', ArtistController.getAll);
-router.get('/:id', ArtistController.getById);
-router.patch('/:id', ArtistController.update);
-router.delete('/:id', ArtistController.delete);
+router.post('/', authorizeAdmin, ArtistController.create);
+router.get('/',authorizeAdmin, ArtistController.getAll);
+router.get('/:id', authorizeAdmin,ArtistController.getById);
+router.patch('/:id',authorizeAdmin, ArtistController.update);
+router.delete('/:id', authorizeAdmin,ArtistController.delete);
 
 // CSV import/export routes
-router.get('/export/csv', ArtistController.exportCSV);
-router.post('/import/csv', upload.single('file'), ArtistController.importCSV);
+router.get('/export/csv', authorizeAdmin,ArtistController.exportCSV);
+router.post('/import/csv',authorizeAdmin, upload.single('file'), ArtistController.importCSV);
 
 export default router;

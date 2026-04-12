@@ -1,6 +1,6 @@
 import express from 'express';
 import { SongController } from '../controllers/song';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken, authorizeAdmin } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -8,10 +8,9 @@ const router = express.Router();
 router.use(authenticateToken);
 
 // Song CRUD routes
-router.post('/', SongController.create);
-router.get('/artist/:artistId', SongController.getByArtistId);
-router.get('/:id', SongController.getById);
-router.patch('/:id', SongController.update);
-router.delete('/:id', SongController.delete);
-
+router.post('/', authorizeAdmin, SongController.create);
+router.get('/artist/:artistId', authorizeAdmin, SongController.getByArtistId);
+router.get('/:id', authorizeAdmin, SongController.getById);
+router.patch('/:id', authorizeAdmin, SongController.update);
+router.delete('/:id', authorizeAdmin, SongController.delete);
 export default router;

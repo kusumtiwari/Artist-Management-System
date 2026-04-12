@@ -1,4 +1,4 @@
-import React, { useEffect, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import Container from '../ui/container';
 import { cn } from '../../utils/cn';
 import { MusicNoteIcon } from '../../assets/icons';

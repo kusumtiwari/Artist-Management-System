@@ -22,6 +22,7 @@ import {
 import { Dialog, DialogContent } from "../ui/dialog";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
+import ErrorMsg from "../ui/error";
 
 const PAGE_SIZE = 10;
 const TOTAL_COLUMNS = 6;
@@ -31,7 +32,7 @@ interface SongsTableProps {
   artistName: string;
 }
 
-export function SongsTable({ artistId, artistName }: SongsTableProps) {
+export function SongsTable({ artistId }: SongsTableProps) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedSong, setSelectedSong] = useState<any | null>(null);
@@ -54,8 +55,50 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
     debouncedSearch(e.target.value);
   };
 
+  if (songsQuery.isLoading) {
+    return (
+      <Table>
+        <TableBody>
+          <TableSkeleton col={TOTAL_COLUMNS} row={5} />
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (songsQuery.isError) {
+    return <ErrorMsg message="Failed to load songs." />;
+  }
+
+  if (!songsData?.songs.length) {
+    return (
+      <div>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-end mb-4">
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              prefixIcon={SearchIcon}
+              placeholder="Search songs..."
+              prefixIconClassname="text-text-default-secondary"
+              className="text-14 sm:w-70 h-9"
+              onChange={handleSearchChange}
+            />
+            <AddSongDialog artistId={artistId} />
+          </div>
+        </div>
+
+        <div className="text-center py-10">
+          <NoTableDataIcon className="mx-auto w-36 h-36" />
+          <p className="text-text-default-secondary text-lg">
+            No songs found!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
+      {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-end mb-4">
         <div className="flex items-center gap-2">
           <Input
@@ -70,6 +113,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
         </div>
       </div>
 
+      {/* Table */}
       <Table>
         <TableHeader>
           <TableRow>
@@ -81,76 +125,69 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {songsQuery.isLoading && (
-            <TableSkeleton col={TOTAL_COLUMNS} row={5} />
-          )}
 
-          {!songsQuery.isLoading && (songsData?.songs?.length ?? 0) === 0 && (
-            <TableRow>
-              <TableCell colSpan={TOTAL_COLUMNS} className="text-center py-8">
-                <NoTableDataIcon className="mx-auto  w-36 h-36" />
-                <p className="text-text-default-secondary text-lg">
-                  No songs found!
-                </p>
+        <TableBody>
+          {songsData.songs.map((song) => (
+            <TableRow key={song.id}>
+              <TableCell className="min-w-45">{song.title}</TableCell>
+
+              <TableCell className="min-w-40">
+                {song.album_name ?? "—"}
+              </TableCell>
+
+              <TableCell className="min-w-30">{song.genre}</TableCell>
+
+              <TableCell className="min-w-45">
+                {new Date(song.created_at).toLocaleDateString()}
+              </TableCell>
+
+              <TableCell className="min-w-45">
+                {new Date(song.updated_at).toLocaleDateString()}
+              </TableCell>
+
+              <TableCell className="min-w-25">
+                <div className="flex items-center gap-3">
+                  <AddSongDialog
+                    artistId={artistId}
+                    song={song}
+                    trigger={
+                      <button>
+                        <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />
+                      </button>
+                    }
+                  />
+
+                  <button
+                    disabled={deleteSong.isPending}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedSong(song);
+                      setIsDeleteOpen(true);
+                    }}
+                  >
+                    <Trash01Icon className="text-fill-error w-6 h-5 cursor-pointer" />
+                  </button>
+                </div>
               </TableCell>
             </TableRow>
-          )}
-
-          {!songsQuery.isLoading &&
-            songsData?.songs.map((song) => (
-              <TableRow key={song.id}>
-                <TableCell className="min-w-45">{song.title}</TableCell>
-                <TableCell className="min-w-40">
-                  {song.album_name ?? "—"}
-                </TableCell>
-                <TableCell className="min-w-30">{song.genre}</TableCell>
-                <TableCell className="min-w-45">
-                  {new Date(song.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="min-w-45">
-                  {new Date(song.updated_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="min-w-25">
-                  <div className="flex items-center gap-3">
-                    <AddSongDialog
-                      artistId={artistId}
-                      song={song}
-                      trigger={
-                        <button className="text-black hover:text-primary transition-colors">
-                          <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />
-                        </button>
-                      }
-                    />
-                    <button
-                      className="text-icon hover:text-error transition-colors"
-                      disabled={deleteSong.isPending}
-                      onClick={() => {
-                        setSelectedSong(song);
-                        setIsDeleteOpen(true);
-                      }}
-                    >
-                      <Trash01Icon className="text-fill-error w-6 h-5 cursor-pointer" />
-                    </button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+          ))}
         </TableBody>
       </Table>
-      {!songsQuery.isLoading &&
-        (songsData?.pagination?.total ?? 0) > PAGE_SIZE && (
-          <div className="flex justify-end mt-4">
-            <Pagination
-              currentPage={page}
-              pageCount={Math.ceil(
-                (songsData?.pagination?.total ?? 0) / PAGE_SIZE,
-              )}
-              onPageChange={setPage}
-            />
-          </div>
-        )}
 
+      {/* Pagination */}
+      {(songsData.pagination?.total ?? 0) > PAGE_SIZE && (
+        <div className="flex justify-end mt-4">
+          <Pagination
+            currentPage={page}
+            pageCount={Math.ceil(
+              (songsData.pagination?.total ?? 0) / PAGE_SIZE
+            )}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
+
+      {/* Delete Modal */}
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="p-0!">
           <DeleteModal
@@ -163,12 +200,12 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
                 onSuccess: () => {
                   setIsDeleteOpen(false);
                   setSelectedSong(null);
-                  songsQuery.refetch();
                 },
               });
             }}
           >
-            Are you sure you want to delete <b>{selectedSong?.title}</b>?
+            Are you sure you want to delete{" "}
+            <b>{selectedSong?.title}</b>?
           </DeleteModal>
         </DialogContent>
       </Dialog>

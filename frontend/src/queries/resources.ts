@@ -14,16 +14,19 @@ export const useUsers = (page: number, pageSize = 10, search: string) => {
     queryKey: ['users', page, search],
     queryFn: () => resourcesService.fetchUsers(page, pageSize, search),
     placeholderData: (previousData) => previousData,
+    retry: false, 
   })
 }
 
 export const useArtists = (page: number, pageSize = 10, search: string = '') => {
+
   return useQuery<ArtistsResponse>({
     queryKey: ['artists', page, search],
     queryFn: () => resourcesService.fetchArtists(page, pageSize, search),
     placeholderData: (previousData) => previousData,
-  })
-}
+    retry: false,
+  });
+};
 
 export const useArtist = (id: number) => {
   return useQuery({

@@ -13,10 +13,16 @@ import { AddUserDialog } from "./add-user-dialog";
 import type { UsersResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
-import { SearchIcon, Edit03Icon, Trash01Icon, NoTableDataIcon } from "../../assets";
+import {
+  SearchIcon,
+  Edit03Icon,
+  Trash01Icon,
+  NoTableDataIcon,
+} from "../../assets";
 import { Dialog, DialogContent } from "../ui/dialog";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
+import ErrorMsg from "../ui/error";
 
 const PAGE_SIZE = 10;
 const TOTAL_COLUMNS = 9;
@@ -44,8 +50,53 @@ export function UsersTable() {
     debouncedSearch(e.target.value);
   };
 
+  if (usersQuery.isLoading) {
+    return (
+      <Table>
+        <TableBody>
+          <TableSkeleton col={TOTAL_COLUMNS} row={5} />
+        </TableBody>
+      </Table>
+    );
+  }
+
+  if (usersQuery.isError) {
+    return <ErrorMsg message="Failed to load users." />;
+  }
+
+  if (!usersData?.users.length) {
+    return (
+      <div>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
+          <p className="text-sm text-text-default-secondary">
+            Manage your registered users and access details.
+          </p>
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              prefixIcon={SearchIcon}
+              placeholder="Search users..."
+              prefixIconClassname="text-text-default-secondary"
+              className="text-14 sm:w-70 h-9 text-text-default"
+              onChange={handleSearchChange}
+            />
+            <AddUserDialog />
+          </div>
+        </div>
+
+        <div className="text-center py-10">
+          <NoTableDataIcon className="mx-auto w-36 h-36" />
+          <p className="text-lg text-text-default-secondary">
+            No users found!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
+      {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
         <p className="text-sm text-text-default-secondary">
           Manage your registered users and access details.
@@ -63,6 +114,7 @@ export function UsersTable() {
         </div>
       </div>
 
+      {/* Table */}
       <Table>
         <TableHeader>
           <TableRow>
@@ -77,105 +129,100 @@ export function UsersTable() {
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {usersQuery.isLoading && (
-            <TableSkeleton col={TOTAL_COLUMNS} row={5} />
-          )}
 
-          {!usersQuery.isLoading && usersData?.users.length === 0 && (
-            <TableRow>
-              <TableCell
-                colSpan={7}
-                className="py-16"
-                style={{ minWidth: "900px" }}
-              >
-                <div className="flex flex-col items-center justify-center w-full">
-                  <NoTableDataIcon className="mx-auto w-36 h-36" />
-                  <p className="text-lg text-text-default-secondary">
-                    No users found!
-                  </p>
-                </div>
+        <TableBody>
+          {usersData.users.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell className="min-w-45">
+                {user.first_name} {user.last_name} (
+                {user.isAdmin ? "Admin" : "User"})
+              </TableCell>
+
+              <TableCell className="min-w-55">{user.email}</TableCell>
+
+              <TableCell className="min-w-40">
+                {user.phone ?? "—"}
+              </TableCell>
+
+              <TableCell className="min-w-35">
+                {user.gender === "male"
+                  ? "Male"
+                  : user.gender === "female"
+                  ? "Female"
+                  : user.gender === "other"
+                  ? "Other"
+                  : "—"}
+              </TableCell>
+
+              <TableCell className="min-w-40">
+                {user.dob
+                  ? new Date(user.dob).toLocaleDateString()
+                  : "—"}
+              </TableCell>
+
+              <TableCell className="min-w-55 truncate">
+                {user.address ?? "—"}
+              </TableCell>
+
+              <TableCell className="min-w-45">
+                {new Date(user.created_at).toLocaleDateString()}
+              </TableCell>
+
+              <TableCell className="min-w-45">
+                {new Date(user.updated_at).toLocaleDateString()}
+              </TableCell>
+
+              <TableCell className="min-w-25">
+                {user.isAdmin ? (
+                  <span className="text-default-tertiary">—</span>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <AddUserDialog
+                      mode="edit"
+                      initialValues={{
+                        ...user,
+                        dob: user.dob ? new Date(user.dob) : null,
+                        id: user.id,
+                      }}
+                      trigger={
+                        <button>
+                          <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />
+                        </button>
+                      }
+                    />
+
+                    <button
+                      disabled={deleteUser.isPending}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedUser(user);
+                        setIsDeleteOpen(true);
+                      }}
+                    >
+                      <Trash01Icon className="text-fill-error w-6 h-5 cursor-pointer" />
+                    </button>
+                  </div>
+                )}
               </TableCell>
             </TableRow>
-          )}
-          {!usersQuery.isLoading &&
-            usersData?.users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="min-w-45">
-                  {user.first_name} {user.last_name} (
-                  {user.isAdmin ? "Admin" : "User"})
-                </TableCell>
-                <TableCell className="min-w-55">{user.email}</TableCell>
-                <TableCell className="min-w-40">{user.phone ?? "—"}</TableCell>
-                <TableCell className="min-w-35">
-                  {user.gender === "male"
-                    ? "Male"
-                    : user.gender === "female"
-                      ? "Female"
-                      : user.gender === "other"
-                        ? "Other"
-                        : "—"}
-                </TableCell>
-                <TableCell className="min-w-40">
-                  {user.dob ? new Date(user.dob).toLocaleDateString() : "—"}
-                </TableCell>
-                <TableCell className="min-w-55 truncate">
-                  {user.address ?? "—"}
-                </TableCell>
-                <TableCell className="min-w-45">
-                  {new Date(user.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="min-w-45">
-                  {new Date(user.updated_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="min-w-25">
-                  {user.isAdmin ? (
-                    <span className="text-default-tertiary">—</span>
-                  ) : (
-                    <div className="flex items-center gap-3">
-                      <AddUserDialog
-                        mode="edit"
-                        initialValues={{
-                          ...user,
-                          dob: user.dob ? new Date(user.dob) : null,
-                          id: user.id,
-                        }}
-                        trigger={
-                          <button className="text-black hover:text-primary transition-colors">
-                            <Edit03Icon className="text-primary w-6 h-5 cursor-pointer" />
-                          </button>
-                        }
-                      />
-                      <button
-                        className="text-icon hover:text-error transition-colors"
-                        disabled={deleteUser.isPending}
-                        onClick={() => {
-                          setSelectedUser(user);
-                          setIsDeleteOpen(true);
-                        }}
-                      >
-                        <Trash01Icon className="text-fill-error w-6 h-5 cursor-pointer" />
-                      </button>
-                    </div>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+          ))}
         </TableBody>
       </Table>
-      {!usersQuery.isLoading &&
-        (usersData?.pagination?.total ?? 0) > PAGE_SIZE && (
-          <div className="flex justify-end mt-4">
-            <Pagination
-              currentPage={page}
-              pageCount={Math.ceil(
-                (usersData?.pagination?.total ?? 0) / PAGE_SIZE,
-              )}
-              onPageChange={setPage}
-            />
-          </div>
-        )}
 
+      {/* Pagination */}
+      {(usersData.pagination?.total ?? 0) > PAGE_SIZE && (
+        <div className="flex justify-end mt-4">
+          <Pagination
+            currentPage={page}
+            pageCount={Math.ceil(
+              (usersData.pagination?.total ?? 0) / PAGE_SIZE
+            )}
+            onPageChange={setPage}
+          />
+        </div>
+      )}
+
+      {/* Delete Modal */}
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="p-0!">
           <DeleteModal
@@ -188,7 +235,6 @@ export function UsersTable() {
                 onSuccess: () => {
                   setIsDeleteOpen(false);
                   setSelectedUser(null);
-                  usersQuery.refetch();
                 },
               });
             }}

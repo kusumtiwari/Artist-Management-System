@@ -13,7 +13,12 @@ import { AddSongDialog } from "./add-song-dialog";
 import type { SongsResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
-import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
+import {
+  SearchIcon,
+  Edit03Icon,
+  Trash01Icon,
+  NoTableDataIcon,
+} from "../../assets";
 import { Dialog, DialogContent } from "../ui/dialog";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
@@ -64,7 +69,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
           <AddSongDialog artistId={artistId} />
         </div>
       </div>
- 
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -83,11 +88,11 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
 
           {!songsQuery.isLoading && (songsData?.songs?.length ?? 0) === 0 && (
             <TableRow>
-              <TableCell
-                colSpan={TOTAL_COLUMNS}
-                className="text-center py-8 text-default-secondary"
-              >
-                No songs found.
+              <TableCell colSpan={TOTAL_COLUMNS} className="text-center py-8">
+                <NoTableDataIcon className="mx-auto  w-36 h-36" />
+                <p className="text-text-default-secondary text-lg">
+                  No songs found!
+                </p>
               </TableCell>
             </TableRow>
           )}
@@ -95,15 +100,11 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
           {!songsQuery.isLoading &&
             songsData?.songs.map((song) => (
               <TableRow key={song.id}>
-                <TableCell className="min-w-45">
-                  {song.title}
-                </TableCell>
+                <TableCell className="min-w-45">{song.title}</TableCell>
                 <TableCell className="min-w-40">
                   {song.album_name ?? "—"}
                 </TableCell>
-                <TableCell className="min-w-30">
-                  {song.genre}
-                </TableCell>
+                <TableCell className="min-w-30">{song.genre}</TableCell>
                 <TableCell className="min-w-45">
                   {new Date(song.created_at).toLocaleDateString()}
                 </TableCell>
@@ -137,15 +138,18 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
             ))}
         </TableBody>
       </Table>
-      {!songsQuery.isLoading && (songsData?.pagination?.total ?? 0) > PAGE_SIZE && (
-        <div className="flex justify-end mt-4">
-          <Pagination
-            currentPage={page}
-            pageCount={Math.ceil((songsData?.pagination?.total ?? 0) / PAGE_SIZE)}
-            onPageChange={setPage}
-          />
-        </div>
-      )}
+      {!songsQuery.isLoading &&
+        (songsData?.pagination?.total ?? 0) > PAGE_SIZE && (
+          <div className="flex justify-end mt-4">
+            <Pagination
+              currentPage={page}
+              pageCount={Math.ceil(
+                (songsData?.pagination?.total ?? 0) / PAGE_SIZE,
+              )}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
 
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
         <DialogContent className="p-0!">
@@ -164,11 +168,7 @@ export function SongsTable({ artistId, artistName }: SongsTableProps) {
               });
             }}
           >
-            Are you sure you want to delete{" "}
-            <b>
-              {selectedSong?.title}
-            </b>
-            ?
+            Are you sure you want to delete <b>{selectedSong?.title}</b>?
           </DeleteModal>
         </DialogContent>
       </Dialog>

@@ -13,7 +13,7 @@ import { AddUserDialog } from "./add-user-dialog";
 import type { UsersResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
-import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
+import { SearchIcon, Edit03Icon, Trash01Icon, NoTableDataIcon } from "../../assets";
 import { Dialog, DialogContent } from "../ui/dialog";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
@@ -85,19 +85,25 @@ export function UsersTable() {
           {!usersQuery.isLoading && usersData?.users.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={TOTAL_COLUMNS}
-                className="text-center py-8 text-default-secondary"
+                colSpan={7}
+                className="py-16"
+                style={{ minWidth: "900px" }}
               >
-                No users found.
+                <div className="flex flex-col items-center justify-center w-full">
+                  <NoTableDataIcon className="mx-auto w-36 h-36" />
+                  <p className="text-lg text-text-default-secondary">
+                    No users found!
+                  </p>
+                </div>
               </TableCell>
             </TableRow>
           )}
-
           {!usersQuery.isLoading &&
             usersData?.users.map((user) => (
               <TableRow key={user.id}>
                 <TableCell className="min-w-45">
-                  {user.first_name} {user.last_name} ({user.isAdmin ? "Admin" : "User"})
+                  {user.first_name} {user.last_name} (
+                  {user.isAdmin ? "Admin" : "User"})
                 </TableCell>
                 <TableCell className="min-w-55">{user.email}</TableCell>
                 <TableCell className="min-w-40">{user.phone ?? "—"}</TableCell>

@@ -12,3 +12,4 @@ export { default as Trash01Icon } from './trash-01.svg';
 export { default as UserIcon } from './user.svg';
 export {default as SunIcon} from './sun.svg';
 export {default as MoonIcon} from './moon.svg';
+export {default as NoTableDataIcon} from './no-table-data.svg';

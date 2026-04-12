@@ -19,7 +19,7 @@ import { ImportArtistDialog } from "./import-artist-dialog";
 import type { Artist, ArtistsResponse } from "../../types/resources";
 import { Input } from "../ui/Input";
 import { debounce } from "../../utils/debounce";
-import { SearchIcon, Edit03Icon, Trash01Icon } from "../../assets";
+import { SearchIcon, Edit03Icon, Trash01Icon, NoTableDataIcon } from "../../assets";
 import DeleteModal from "../ui/delete-modal";
 import Pagination from "../ui/pagination";
 import { useNavigate } from "react-router-dom";
@@ -110,10 +110,11 @@ export function ArtistsTable() {
           {!artistsQuery.isLoading && artistsData?.artists.length === 0 && (
             <TableRow>
               <TableCell
-                colSpan={TOTAL_COLUMNS}
+                colSpan={7}
                 className="text-center py-8 text-default-secondary"
               >
-                No artists found.
+                <NoTableDataIcon className="mx-auto mb-4 w-36 h-36" />
+                <p className="text-lg">No artists found!</p>
               </TableCell>
             </TableRow>
           )}
